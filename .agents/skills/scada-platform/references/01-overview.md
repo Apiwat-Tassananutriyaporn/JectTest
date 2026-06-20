@@ -75,18 +75,18 @@ find the right folder before making a change.
 
 | Module | Responsibility | Suggested folder | Status |
 |---|---|---|---|
-| App Shell | App layout, navigation, page routing, high-level composition | `src/app/`, `src/layouts/` | planned |
-| Project | Create, open, edit, save project metadata and project type | `src/features/project/` | planned |
-| Project Settings | Settings modal, project name, type, connection config entry point | `src/features/project-settings/` | planned |
-| Scene Editor | 3D editor, grid, camera, selection, placement, transform controls | `src/features/scene/` | planned |
-| Model Library | Imported GLB assets, model metadata, model placement | `src/features/models/` | planned |
-| Component Library | 2D SCADA components placed in the 3D world | `src/features/components/` | planned |
-| Tags | Tag CRUD, tag binding metadata, unit, mode, current value | `src/features/tags/` | planned |
-| MQTT | MQTT broker config, browser WebSocket connection, subscribe/publish | `src/services/mqtt/` | planned |
-| Alarms | Alarm rules, evaluation, active/cleared events, alarm log | `src/features/alarms/` | planned |
-| Dashboard | Dashboard layout, panels, gauges, charts | `src/features/dashboard/` | planned |
-| Permissions | watchable/controlable/editable client-side capability model | `src/features/permissions/` | planned |
-| Persistence | localStorage/IndexedDB save/load, schema versioning | `src/services/persistence/` | planned |
+| App Shell | App layout, navigation, page routing, high-level composition | `frontend/src/app/`, `frontend/src/layouts/` | planned |
+| Project | Create, open, edit, save project metadata and project type | `frontend/src/features/project/` | planned |
+| Project Settings | Settings modal, project name, type, connection config entry point | `frontend/src/features/project-settings/` | planned |
+| Scene Editor | 3D editor, grid, camera, selection, placement, transform controls | `frontend/src/features/scene/` | planned |
+| Model Library | Imported GLB assets, model metadata, model placement | `frontend/src/features/models/` | planned |
+| Component Library | 2D SCADA components placed in the 3D world | `frontend/src/features/components/` | planned |
+| Tags | Tag CRUD, tag binding metadata, unit, mode, current value | `frontend/src/features/tags/` | planned |
+| MQTT | MQTT broker config, browser WebSocket connection, subscribe/publish | `frontend/src/services/mqtt/` | planned |
+| Alarms | Alarm rules, evaluation, active/cleared events, alarm log | `frontend/src/features/alarms/` | planned |
+| Dashboard | Dashboard layout, panels, gauges, charts | `frontend/src/features/dashboard/` | planned |
+| Permissions | watchable/controlable/editable client-side capability model | `frontend/src/features/permissions/` | planned |
+| Persistence | localStorage/IndexedDB save/load, schema versioning | `frontend/src/services/persistence/` | planned |
 
 ## Runtime Flow
 
@@ -153,7 +153,7 @@ Use this section to quickly find the right area when something breaks.
 
 | Symptom | Inspect first | Then inspect |
 |---|---|---|
-| MQTT cannot connect | `src/services/mqtt/` | Project Settings, connection form validation |
+| MQTT cannot connect | `frontend/src/services/mqtt/` | Project Settings, connection form validation |
 | Test Connection fails | MQTT service error handling | broker URL, protocol, client ID |
 | Tag value does not update | Tags store | MQTT subscription mapping |
 | Text Output shows wrong unit | Tags model | component tag binding |

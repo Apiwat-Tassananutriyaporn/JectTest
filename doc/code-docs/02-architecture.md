@@ -7,7 +7,7 @@
    helpers.
 2. **Keep shared infrastructure outside feature modules.** MQTT, persistence,
    platform state, shared UI primitives, and cross-feature utilities live in
-   `src/services/`, `src/shared/`, or `src/types/`.
+   `frontend/src/services/`, `frontend/src/shared/`, or `frontend/src/types/`.
 3. **State has one owner.** A concept must have one canonical store/model. Other
    modules read it through public selectors, hooks, or service APIs.
 4. **Rendering is not business logic.** React components render UI and forward
@@ -23,24 +23,24 @@
 
 | Layer | Folder | May depend on | Must NOT |
 |---|---|---|---|
-| App composition | `src/app/` | layouts, feature route/page entry points, services initialization | contain feature business logic |
-| Layouts | `src/layouts/` | shared UI, feature navigation entry points | own domain state |
-| Feature UI | `src/features/<feature>/components/` | local hooks/store, shared UI, local types | import other feature internals directly |
-| Feature hooks | `src/features/<feature>/hooks/` | local store, services, local helpers | mutate another feature store directly |
-| Feature store | `src/features/<feature>/store/` | local types, shared types, services if needed | import React components |
-| Feature logic | `src/features/<feature>/lib/` | local/shared types, pure helpers | access DOM, MQTT client, localStorage directly |
-| Services | `src/services/` | shared/types, external libraries | import feature UI components |
-| Shared UI | `src/shared/ui/` | shared types, styling utilities | depend on feature modules |
-| Shared types | `src/types/` | TypeScript only | import runtime code |
+| App composition | `frontend/src/app/` | layouts, feature route/page entry points, services initialization | contain feature business logic |
+| Layouts | `frontend/src/layouts/` | shared UI, feature navigation entry points | own domain state |
+| Feature UI | `frontend/src/features/<feature>/components/` | local hooks/store, shared UI, local types | import other feature internals directly |
+| Feature hooks | `frontend/src/features/<feature>/hooks/` | local store, services, local helpers | mutate another feature store directly |
+| Feature store | `frontend/src/features/<feature>/store/` | local types, shared types, services if needed | import React components |
+| Feature logic | `frontend/src/features/<feature>/lib/` | local/shared types, pure helpers | access DOM, MQTT client, localStorage directly |
+| Services | `frontend/src/services/` | shared/types, external libraries | import feature UI components |
+| Shared UI | `frontend/src/shared/ui/` | shared types, styling utilities | depend on feature modules |
+| Shared types | `frontend/src/types/` | TypeScript only | import runtime code |
 
 Key rules:
 
 - Feature modules may expose a small public API through `index.ts`.
-- Other modules should import from `src/features/<feature>` only, not from deep
-  internal paths such as `src/features/tags/store/tagStore`.
+- Other modules should import from `frontend/src/features/<feature>` only, not from deep
+  internal paths such as `frontend/src/features/tags/store/tagStore`.
 - Shared services must be UI-agnostic.
-- MQTT behavior belongs in `src/services/mqtt/`, while tag value ownership
-  belongs in `src/features/tags/`.
+- MQTT behavior belongs in `frontend/src/services/mqtt/`, while tag value ownership
+  belongs in `frontend/src/features/tags/`.
 - Persistence writes project snapshots; it should not know how to render scenes
   or evaluate alarms.
 - Alarm evaluation reads tag values but does not own tag definitions.
@@ -51,57 +51,61 @@ Key rules:
 
 ```text
 <project>/
-├── doc/
-│   ├── req/
-│   └── code-docs/
-├── .agents/
-│   └── skills/
-│       └── scada-platform/
-│           ├── SKILL.md
-│           ├── references/
-│           ├── scripts/
-│           └── assets/
-├── public/
-├── src/
-│   ├── app/
-│   │   ├── App.tsx
-│   │   ├── providers/
-│   │   └── routes/
-│   ├── layouts/
-│   │   ├── AppShell.tsx
-│   │   └── EditorLayout.tsx
-│   ├── features/
-│   │   ├── project/
-│   │   ├── project-settings/
-│   │   ├── scene/
-│   │   ├── models/
-│   │   ├── components/
-│   │   ├── tags/
-│   │   ├── alarms/
-│   │   ├── dashboard/
-│   │   └── permissions/
-│   ├── services/
-│   │   ├── mqtt/
-│   │   └── persistence/
-│   ├── shared/
-│   │   ├── ui/
-│   │   ├── hooks/
-│   │   ├── lib/
-│   │   └── constants/
-│   ├── types/
-│   ├── styles/
-│   └── main.tsx
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
+|-- PRODUCT.md
+|-- DESIGN.md
+|-- doc/
+|   |-- req/
+|   `-- code-docs/
+|-- .agents/
+|   `-- skills/
+|       `-- scada-platform/
+|           |-- SKILL.md
+|           |-- references/
+|           |-- scripts/
+|           `-- assets/
+|-- frontend/
+|   |-- public/
+|   |-- src/
+|   |   |-- app/
+|   |   |   |-- App.tsx
+|   |   |   |-- providers/
+|   |   |   `-- routes/
+|   |   |-- layouts/
+|   |   |   |-- AppShell.tsx
+|   |   |   `-- EditorLayout.tsx
+|   |   |-- features/
+|   |   |   |-- project/
+|   |   |   |-- project-settings/
+|   |   |   |-- scene/
+|   |   |   |-- models/
+|   |   |   |-- components/
+|   |   |   |-- tags/
+|   |   |   |-- alarms/
+|   |   |   |-- dashboard/
+|   |   |   `-- permissions/
+|   |   |-- services/
+|   |   |   |-- mqtt/
+|   |   |   `-- persistence/
+|   |   |-- shared/
+|   |   |   |-- ui/
+|   |   |   |-- hooks/
+|   |   |   |-- lib/
+|   |   |   `-- constants/
+|   |   |-- types/
+|   |   |-- styles/
+|   |   `-- main.tsx
+|   |-- package.json
+|   |-- tsconfig.json
+|   `-- vite.config.ts
+`-- backend/
+    `-- README.md # future; not required in Version 07
 ```
-
 ## Feature Module Shape
 
 Each feature should follow this shape when it is large enough to need it:
 
 ```text
-src/features/<feature>/
+frontend/src/features/<feature>/
 ├── components/     # React components owned by this feature
 ├── hooks/          # feature-specific hooks
 ├── store/          # Zustand store or store slice
@@ -116,7 +120,7 @@ shape instead of spreading logic into unrelated folders.
 
 ## Module Responsibilities
 
-### App Shell - `src/app/`, `src/layouts/`
+### App Shell - `frontend/src/app/`, `frontend/src/layouts/`
 
 Owns high-level app composition, providers, routes, and layout frame.
 
@@ -134,7 +138,7 @@ Should not contain:
 - Scene object manipulation logic
 - Alarm evaluation
 
-### Project - `src/features/project/`
+### Project - `frontend/src/features/project/`
 
 Owns project list, active project selection, project metadata, and project type.
 
@@ -151,7 +155,7 @@ Should not contain:
 - Scene renderer code
 - Dashboard panel rendering
 
-### Project Settings - `src/features/project-settings/`
+### Project Settings - `frontend/src/features/project-settings/`
 
 Owns the project settings modal and settings-specific UI composition.
 
@@ -168,7 +172,7 @@ Should not contain:
 - Tag value store
 - Persistence storage implementation
 
-### Scene Editor - `src/features/scene/`
+### Scene Editor - `frontend/src/features/scene/`
 
 Owns the 3D editing surface and scene object operations.
 
@@ -187,7 +191,7 @@ Should not contain:
 - Alarm rule evaluation
 - Dashboard layout code
 
-### Models - `src/features/models/`
+### Models - `frontend/src/features/models/`
 
 Owns model assets, imported GLB metadata, model placement, material config, and
 model action configuration UI.
@@ -204,7 +208,7 @@ Should not contain:
 - Tag store implementation
 - MQTT connection logic
 
-### Components - `src/features/components/`
+### Components - `frontend/src/features/components/`
 
 Owns reusable SCADA component definitions and world-anchored component rendering.
 
@@ -223,7 +227,7 @@ Should not contain:
 - MQTT client logic
 - Project persistence implementation
 
-### Tags - `src/features/tags/`
+### Tags - `frontend/src/features/tags/`
 
 Owns tag definitions, tag values, tag binding metadata, units, modes, and tag UI.
 
@@ -241,7 +245,7 @@ Should not contain:
 - Scene rendering
 - Dashboard rendering
 
-### MQTT - `src/services/mqtt/`
+### MQTT - `frontend/src/services/mqtt/`
 
 Owns MQTT broker configuration, browser WebSocket connection, test connection,
 subscribe, publish, disconnect, and connection status.
@@ -262,7 +266,7 @@ Should not contain:
 - Alarm logic
 - Scene rendering
 
-### Alarms - `src/features/alarms/`
+### Alarms - `frontend/src/features/alarms/`
 
 Owns alarm rules, alarm evaluation, active/cleared state, severity, and alarm log.
 
@@ -279,7 +283,7 @@ Should not contain:
 - Dashboard panel layout
 - Persistence storage adapter
 
-### Dashboard - `src/features/dashboard/`
+### Dashboard - `frontend/src/features/dashboard/`
 
 Owns dashboard pages, panel layout, gauges, charts, and tag-bound panel state.
 
@@ -297,7 +301,7 @@ Should not contain:
 - Alarm rule ownership
 - Scene object transform logic
 
-### Permissions - `src/features/permissions/`
+### Permissions - `frontend/src/features/permissions/`
 
 Owns client-side role/capability checks for Version 07.
 
@@ -313,7 +317,7 @@ Should not contain:
 - Login/signup
 - Token/session logic
 
-### Persistence - `src/services/persistence/`
+### Persistence - `frontend/src/services/persistence/`
 
 Owns prototype save/load to browser local state, localStorage, or IndexedDB.
 

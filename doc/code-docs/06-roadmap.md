@@ -300,7 +300,7 @@ When UI flow changes:
 | Risk | Impact | Mitigation |
 |---|---|---|
 | Implementing PLC/ESP too early | Wrong integration gets hardcoded | Keep Phase 08 spec-pending |
-| Direct MQTT code spreads into UI components | Hard to replace data source later | Keep MQTT in `src/services/mqtt/` |
+| Direct MQTT code spreads into UI components | Hard to replace data source later | Keep MQTT in `frontend/src/services/mqtt/` |
 | Tag models diverge between modules | Dashboard/scene/alarm bugs | Use `03-data-model.md` as source of truth |
 | Scene editor grows into one large file | Hard to maintain | Follow feature/module boundaries |
 | Persistence shape changes without versioning | Saved projects break | Use `schemaVersion` |

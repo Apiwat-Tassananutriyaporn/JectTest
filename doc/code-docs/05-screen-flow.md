@@ -44,19 +44,19 @@ App
 
 | UI area | Owning folder |
 |---|---|
-| App boot and routes | `src/app/` |
-| Main shell and editor layout | `src/layouts/` |
-| Project list/open/create | `src/features/project/` |
-| Project settings modal | `src/features/project-settings/` |
-| Scene editor viewport | `src/features/scene/` |
-| Right config sidebar | `src/features/scene/` plus selected feature editors |
-| Model library UI | `src/features/models/` |
-| Toolbox component library | `src/features/components/` |
-| Tag configuration | `src/features/tags/` |
-| MQTT broker form behavior | UI in `project-settings`, behavior in `src/services/mqtt/` |
-| Alarm log and alarm config | `src/features/alarms/` |
-| Dashboard screen | `src/features/dashboard/` |
-| Permission guards | `src/features/permissions/` |
+| App boot and routes | `frontend/src/app/` |
+| Main shell and editor layout | `frontend/src/layouts/` |
+| Project list/open/create | `frontend/src/features/project/` |
+| Project settings modal | `frontend/src/features/project-settings/` |
+| Scene editor viewport | `frontend/src/features/scene/` |
+| Right config sidebar | `frontend/src/features/scene/` plus selected feature editors |
+| Model library UI | `frontend/src/features/models/` |
+| Toolbox component library | `frontend/src/features/components/` |
+| Tag configuration | `frontend/src/features/tags/` |
+| MQTT broker form behavior | UI in `project-settings`, behavior in `frontend/src/services/mqtt/` |
+| Alarm log and alarm config | `frontend/src/features/alarms/` |
+| Dashboard screen | `frontend/src/features/dashboard/` |
+| Permission guards | `frontend/src/features/permissions/` |
 
 ## App Start Flow
 
@@ -283,11 +283,11 @@ Behavior:
 
 Folder ownership:
 
-- Shell/sidebar composition: `src/features/scene/`
-- Component-specific editors: `src/features/components/`
-- Model-specific editors: `src/features/models/`
-- Tag selector: `src/features/tags/`
-- Action config: `src/features/models/`
+- Shell/sidebar composition: `frontend/src/features/scene/`
+- Component-specific editors: `frontend/src/features/components/`
+- Model-specific editors: `frontend/src/features/models/`
+- Tag selector: `frontend/src/features/tags/`
+- Action config: `frontend/src/features/models/`
 
 ## Project Settings Modal Flow
 
@@ -372,8 +372,8 @@ Click OK
 Important:
 
 - UI lives in Project Settings.
-- MQTT behavior lives in `src/services/mqtt/`.
-- Tag values live in `src/features/tags/`.
+- MQTT behavior lives in `frontend/src/services/mqtt/`.
+- Tag values live in `frontend/src/features/tags/`.
 
 ## Tag Configuration Flow
 

@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="system-architecture" name="System Architecture">
+    <mxGraphModel dx="1363" dy="880" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111418;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="1000" width="1600" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#F8FAFC;fontSize=26;fontStyle=1;align=left;verticalAlign=middle;" value="3D SCADA Web Platform - System Architecture" vertex="1">
+          <mxGeometry height="40" width="760" x="60" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#CBD5E1;fontSize=14;align=left;verticalAlign=middle;" value="Active Version 07: React/Vite/TypeScript frontend prototype with browser MQTT over WebSocket and local persistence. Backend, database, and production IAM are shown as planned future layers." vertex="1">
+          <mxGeometry height="28" width="1120" x="62" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="mqttBroker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=5;fillColor=#2A3020;strokeColor=#A3E635;strokeWidth=2;fontColor=#FFFFFF;fontSize=16;fontStyle=1;spacing=14;align=center;verticalAlign=middle;shadow=1;" value="External Service / Gateway&#xa;MQTT Broker&#xa;Real-time Pub/Sub" vertex="1">
+          <mxGeometry height="160" width="250" x="835" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="backendLayer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=5;fillColor=#471F2A;strokeColor=#F87171;strokeWidth=2;dashed=1;fontColor=#FFFFFF;fontSize=16;fontStyle=1;spacing=14;align=center;verticalAlign=middle;shadow=1;" value="Backend / API&lt;br&gt;NestJS&amp;nbsp;" vertex="1">
+          <mxGeometry height="160" width="250" x="835" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="dbLayer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=5;fillColor=#2A3020;strokeColor=#A3E635;strokeWidth=2;dashed=1;fontColor=#FFFFFF;fontSize=16;fontStyle=1;spacing=14;align=center;verticalAlign=middle;shadow=1;" value="Database / Storage&#xa;PostgreSQL&#xa;TimeScaleDB&#xa;Future phase" vertex="1">
+          <mxGeometry height="160" width="250" x="1240" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="edge1" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeColor=#E5E7EB;fontColor=#FFFFFF;fontSize=12;edgeStyle=orthogonalEdgeStyle;fillColor=light-dark(#111418,#E0E0E0);" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="435.0666666666666" as="sourcePoint" />
+            <mxPoint x="250" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pGepMssiQ1xfoxB9ni19-3" connectable="0" parent="edge1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Access web app" vertex="1">
+          <mxGeometry relative="1" x="-0.0533" as="geometry">
+            <mxPoint y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge7" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeColor=#94A3B8;fontColor=#CBD5E1;fontSize=12;dashed=1;edgeStyle=orthogonalEdgeStyle;fillColor=light-dark(#C3ABD0,#614C6C);" target="backendLayer" value="Future API / Auth">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="470" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge8" edge="1" parent="1" source="backendLayer" style="endArrow=block;html=1;rounded=0;strokeColor=#94A3B8;fontColor=#CBD5E1;fontSize=12;dashed=1;edgeStyle=orthogonalEdgeStyle;" target="dbLayer" value="Future request / persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge9" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeColor=#94A3B8;fontColor=#CBD5E1;fontSize=12;dashed=1;edgeStyle=orthogonalEdgeStyle;" target="backendLayer" value="Future identity / permission policy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="960" y="290" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge10" edge="1" parent="1" style="endArrow=block;html=1;rounded=0;strokeColor=#94A3B8;fontColor=#CBD5E1;fontSize=12;dashed=1;edgeStyle=orthogonalEdgeStyle;" value="Future login / token">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="470" as="sourcePoint" />
+            <mxPoint x="960.0666666666666" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legendActive" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F2937;strokeColor=#E5E7EB;fontColor=#FFFFFF;fontSize=12;" value="Solid = active Version 07 scope" vertex="1">
+          <mxGeometry height="42" width="210" x="60" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="legendFuture" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F2937;strokeColor=#94A3B8;dashed=1;fontColor=#FFFFFF;fontSize=12;" value="Dashed = planned future layer" vertex="1">
+          <mxGeometry height="42" width="210" x="290" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="pGepMssiQ1xfoxB9ni19-5" parent="1" style="sketch=0;outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" value="" vertex="1">
+          <mxGeometry height="55" width="55" x="50" y="392" as="geometry" />
+        </mxCell>
+        <mxCell id="pGepMssiQ1xfoxB9ni19-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#111418);" value="User" vertex="1">
+          <mxGeometry height="30" width="60" x="45" y="447" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

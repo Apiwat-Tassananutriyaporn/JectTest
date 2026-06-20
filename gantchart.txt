@@ -1,0 +1,493 @@
+GANTT CHART - แผนดำเนินงาน 3D SCADA Web Platform
+ช่วงเวลา: 5 พฤษภาคม 2026 - 30 พฤศจิกายน 2026
+วันที่วางแผน: 18 มิถุนายน 2026
+เป้าหมายหลัก: ทำระบบให้เสร็จภายในสัปดาห์ที่ 2 ของเดือนพฤศจิกายน 2026
+ช่วงเผื่อเวลา: 16-30 พฤศจิกายน 2026
+
+============================================================
+1. ภาพรวมเป้าหมายของโครงการ
+============================================================
+
+โครงการนี้คือ Web-based 3D SCADA / HMI Platform สำหรับสร้างหน้าจอ
+Monitoring และ Control แบบ 3D โดยผู้ใช้สามารถสร้าง project, วาง model,
+วาง component, ตั้งค่า tag, เชื่อมต่อ protocol, ตั้ง alarm, ทำ dashboard,
+จัดการสิทธิ์ผู้ใช้, บันทึกข้อมูลผ่าน backend/database และเตรียมระบบสำหรับ
+gateway / PLC integration ได้
+
+งานหลักที่ต้องเสร็จในโครงการนี้:
+
+- Frontend SCADA editor
+- 3D Scene Editor
+- Component 2D และ Component 3D พื้นฐาน
+- 3D Component Design System ให้เป็น theme เดียวกัน
+- Project / Scene / Model / Component management
+- Tag configuration
+- MQTT Direct Topic
+- Backend API
+- Database persistence
+- Gateway configuration
+- PLC/Gateway integration ผ่าน simulator/mock gateway ก่อน
+- Alarm configuration และ Alarm Log
+- Dashboard gauge/chart
+- User permission: watchable, controlable, editable
+- Auth/Permission structure สำหรับต่อยอด production
+- Integration test
+- Deployment environment
+- งานเล่มปริญญานิพนธ์
+- Documentation, Demo, Presentation
+
+แนวคิดสำคัญของแผน:
+
+- กรกฎาคมเน้น frontend editor ให้ใช้งานได้จริงก่อน
+- สิงหาคมปิด frontend prototype ให้ค่อนข้างนิ่ง
+- กันยายนเน้น backend + database + API + save/load ให้เสถียร
+- ตุลาคมใช้ MQTT Gateway หรือ PLC Simulator เป็นหลักเพื่อลดความเสี่ยง
+- งานเล่มไม่เริ่มหลังระบบเสร็จทั้งหมด แต่เริ่มขึ้นโครงช่วงปลาย dev
+- deployment ไม่ควรไว้ท้ายสุด ต้องทดลองก่อนเข้าสู่ช่วง demo
+- พฤศจิกายนเน้น final integration, deployment, งานเล่ม, bug fix, presentation
+
+============================================================
+2. Timeline รายเดือน
+============================================================
+
+พฤษภาคม 2026 - Research และ Product Discovery
+------------------------------------------------------------
+5-24 พฤษภาคม:
+- ศึกษา SCADA platform จากเจ้าอื่น
+- ทดลองใช้ product ของคู่แข่งหรือ platform ที่ใกล้เคียง
+- เก็บ pain point จากการใช้งานจริง
+- ดูว่า feature ไหนควรนำมาปรับใช้กับ project ของเรา
+- ดูว่า UX/UI แบบไหนที่ใช้งานยากและควรหลีกเลี่ยง
+
+25-31 พฤษภาคม:
+- ศึกษา tools ที่จะนำมาใช้ใน project
+- ศึกษา frontend stack
+- ศึกษา 3D/scene editor tools เช่น Three.js / React Three Fiber
+- ศึกษา MQTT/protocol tools
+- ศึกษา design reference และ workflow การทำเอกสาร/agent skill
+
+
+มิถุนายน 2026 - Frontend Demo Direction
+------------------------------------------------------------
+1-16 มิถุนายน:
+- สรุป requirement version 07
+- วาง architecture เริ่มต้น
+- จัดโครงสร้าง docs
+- จัดโครงสร้าง agent skill/reference
+- กำหนด design direction และ theme
+
+17-30 มิถุนายน:
+- ทดลองทำ frontend demo
+- ทำ app shell, sidebar, topbar, editor layout
+- ทดลอง scene editor เบื้องต้น
+- ทดลอง drag/drop, select, move, resize, delete, copy/paste
+- ทำ dashboard/alarm mock เพื่อดูทิศทางหน้าจอ
+- ยังไม่เริ่ม backend/database จริง
+
+ผลลัพธ์ที่ต้องได้:
+- เห็นรูปทรงของ platform ชัดขึ้น
+- รู้ว่า frontend ควรเดินต่อแบบไหน
+- รู้ว่า scene editor ควรเป็น flow แบบใด
+
+
+กรกฎาคม 2026 - Frontend Editor ให้ใช้งานได้จริง
+------------------------------------------------------------
+เป้าหมายของเดือนนี้:
+ทำให้ Scene Editor + Component + Tag + MQTT + Local Save ใช้งานได้จริงก่อน
+
+สัปดาห์ที่ 1:
+- ทำ Project create/open/settings
+- ทำโครงสร้าง project state
+- ทำ project setting เบื้องต้น
+- วาง local project snapshot shape
+
+สัปดาห์ที่ 2:
+- ทำ Scene editor core
+- เพิ่ม 3D canvas / grid / camera / selection
+- ทดลอง orbit / pan / zoom
+- เริ่มวางโครงสร้าง scene object
+
+สัปดาห์ที่ 2-3:
+- ออกแบบ 3D Component Design System
+- ออกแบบ component 3D พื้นฐานให้เป็น theme เดียวกัน
+- ตัวอย่าง component 3D: Pump, Motor, Tank, Valve, Pipe, Sensor, Conveyor, Control panel
+- กำหนด style, color, material, scale, lighting rule
+- ทดลองนำ component 3D เข้าฉากเพื่อดูว่าเข้ากับ grid และ UI หรือไม่
+- งานนี้ใช้เวลาไม่เกิน 1 สัปดาห์
+
+สัปดาห์ที่ 3:
+- ทำ Component library
+- ทำ Model library
+- ทำ drag/drop component และ model เข้า scene
+- ทำ move / resize / delete / copy / paste ให้ใช้งานได้ดีขึ้น
+- ทำ config panel สำหรับแก้ค่าพื้นฐานของ object
+
+สัปดาห์ที่ 4:
+- ทำ Tag configuration
+- ทำ MQTT Direct Topic
+- ทำ MQTT over WebSocket เบื้องต้น
+- ทำ local persistence ด้วย localStorage หรือ IndexedDB
+- ทดสอบ save/load project prototype
+
+ผลลัพธ์ที่ต้องได้:
+- Frontend prototype เริ่มใช้งานจริงได้
+- มี scene editor ที่สร้าง/แก้ไข object ได้
+- มี component 3D พื้นฐานสำหรับทดลอง
+- มี tag และ MQTT direct topic flow เบื้องต้น
+- มี local save/load ที่กลับมาเปิด project ได้
+
+
+สิงหาคม 2026 - ปิด Frontend Prototype ให้ค่อนข้างนิ่ง
+------------------------------------------------------------
+เป้าหมายของเดือนนี้:
+ทำ Alarm, Dashboard, Model Action และ permission concept ให้พร้อม review
+ก่อนเริ่ม backend หนัก
+
+สัปดาห์ที่ 1:
+- ทำ Alarm configuration
+- ทำ Alarm engine เบื้องต้น
+- ทำ Alarm Log table
+- ให้อ่าน alarm จาก tag values ไม่อ่าน protocol โดยตรง
+
+สัปดาห์ที่ 2:
+- ทำ Dashboard
+- ทำ Gauge panel
+- ทำ Chart panel
+- ทำ Add panel / resize panel / config panel
+- ให้ dashboard อ่านค่าจาก tag values ไม่ subscribe MQTT เอง
+
+สัปดาห์ที่ 3:
+- ทำ Model action rules จาก tag values
+- เช่น tag value ON แล้ว model หมุน
+- tag value OFF แล้ว model หยุด
+- เชื่อม scene component กับ tag value ให้สมบูรณ์ขึ้น
+
+สัปดาห์ที่ 4:
+- ออกแบบ permission concept:
+  - watchable
+  - controlable
+  - editable
+- Review frontend prototype
+- Lock frontend direction ก่อนเริ่ม backend จริง
+- สรุป API contract
+- ออกแบบ backend module
+- ออกแบบ database schema
+- ออกแบบ gateway/protocol boundary
+
+ผลลัพธ์ที่ต้องได้:
+- Frontend feature หลัก review ได้ครบ
+- รู้ data model ที่ backend ต้องรองรับ
+- รู้ permission model ที่ต้องเก็บใน project
+- พร้อมเริ่ม backend/database ในเดือนกันยายน
+
+
+กันยายน 2026 - Backend + Database + API + Save/Load ให้เสถียร
+------------------------------------------------------------
+เป้าหมายของเดือนนี้:
+ทำ backend/database ให้มั่นคงก่อน ยังไม่ลง PLC หนักในเดือนนี้
+
+สัปดาห์ที่ 1:
+- Scaffold backend project
+- วาง module structure
+- ทำ database setup
+- ทำ migration เริ่มต้น
+- ทำ Project REST API
+- ทำ API สำหรับ create/open/update/delete project
+
+สัปดาห์ที่ 2:
+- ทำ database schema สำหรับ:
+  - Project
+  - User permission ใน project
+  - Tags
+  - Scenes
+  - Scene objects
+  - Dashboard panels
+  - Alarm rules/events
+  - Connection config
+- ทำ project save/load ผ่าน backend
+
+สัปดาห์ที่ 3:
+- ทำ API สำหรับ tags, scenes, dashboard, alarms
+- เชื่อม frontend persistence จาก local save/load ไป backend save/load
+- ทำ validation หลักของ API
+- ทำ error response format ให้ frontend ใช้งานง่าย
+
+สัปดาห์ที่ 4:
+- ทำ Auth/Permission data model เบื้องต้น
+- ทำ role/capability mapping
+- ทำ integration test เฉพาะ frontend + backend + database
+- เตรียม design ของ MQTT Gateway และ PLC Simulator สำหรับเดือนตุลาคม
+
+งานเล่มที่เริ่มในเดือนนี้:
+- เริ่มรวบรวมหัวข้อของเล่ม
+- วางสารบัญเบื้องต้น
+- ลิสต์รูป, diagram, architecture, screenshot ที่ต้องใช้
+- เริ่มเก็บหลักฐานและภาพหน้าจอจากระบบที่พัฒนาแล้ว
+
+ผลลัพธ์ที่ต้องได้:
+- Backend + Database ใช้งานกับ frontend ได้เสถียร
+- Save/Load ผ่าน backend ได้
+- โครงเล่มเริ่มตั้งต้นแล้ว ไม่ต้องไปรอหลังระบบเสร็จหมด
+
+
+ตุลาคม 2026 - Runtime Integration + Gateway + Deployment Trial
+------------------------------------------------------------
+เป้าหมายของเดือนนี้:
+ทำ runtime path หลักให้ครบผ่าน backend/gateway และเริ่ม deployment trial
+
+สัปดาห์ที่ 1:
+- ทำ WebSocket runtime gateway
+- ทำ MQTT Gateway
+- ทำ connection/session/runtime state
+- วางทางข้อมูลจาก gateway -> canonical tag values
+
+สัปดาห์ที่ 2:
+- ทำ PLC Simulator หรือ mock gateway
+- ทำ Gateway config UI flow
+- Normalize ข้อมูลจาก MQTT Gateway / PLC Simulator ให้เป็น canonical tag values
+- ทุกอย่างต้องอ่านผ่าน tag กลาง
+
+สัปดาห์ที่ 3:
+- เชื่อม frontend กับ backend runtime
+- Text Output อ่านค่าจาก backend/tag runtime
+- Switch publish/control ผ่าน backend/gateway
+- Gauge และ dashboard อ่านค่าจริงจาก tag runtime
+- Model action ทำงานจาก tag value จริง
+- Alarm ทำงานจาก tag value จริง
+
+สัปดาห์ที่ 4:
+- เชื่อม PLC จริงเฉพาะกรณีที่อุปกรณ์/สเปกพร้อม
+- ถ้า PLC จริงยังไม่พร้อม ให้ใช้ PLC Simulator เป็น demo path หลัก
+- ทำ permission/auth guard เพิ่ม
+- ทำ end-to-end testing
+- แก้ bug จากการรวม frontend/backend/database/gateway
+
+งาน deployment ในเดือนนี้:
+- เลือก deployment target สำหรับ demo
+- วาง env/config strategy
+- ทดลอง build/run แบบ production
+- ทดลอง deploy รอบแรก
+- เก็บปัญหา production-only issue
+
+งานเล่มในเดือนนี้:
+- เริ่มเขียนบทนำ
+- เขียนวัตถุประสงค์
+- เขียนขอบเขตระบบ
+- เขียน requirement, architecture, data flow, screen flow
+- เริ่มเขียน implementation approach ตามของจริงที่ทำไปแล้ว
+
+ผลลัพธ์ที่ต้องได้:
+- Runtime หลักทำงานครบผ่าน backend/gateway path
+- MQTT Gateway หรือ PLC Simulator ใช้งานได้เป็น demo path ที่เสถียร
+- Deployment trial ผ่านอย่างน้อย 1 รอบ
+- งานเล่มส่วนต้นเริ่มเป็นรูปธรรม
+
+
+พฤศจิกายน 2026 - Final Integration, Thesis, Deployment, Demo, Presentation
+------------------------------------------------------------
+เป้าหมายของเดือนนี้:
+ไม่เพิ่ม scope ใหญ่ใหม่ เน้นทำให้ระบบเสถียร พร้อม deploy พร้อมส่งเล่ม พร้อมนำเสนอ
+
+1-7 พฤศจิกายน:
+- Full system integration test
+- ทดสอบ frontend + backend + database + gateway + PLC simulator
+- ถ้า PLC จริงพร้อม ให้ทดสอบ PLC จริงเพิ่ม
+- ทดสอบ project save/load
+- ทดสอบ MQTT/protocol runtime
+- ทดสอบ alarm/dashboard/model action
+- ทดสอบ permission flow
+- Deploy demo environment รอบหลัก
+- ตรวจ browser / asset / config / runtime path หลัง deploy
+
+8-15 พฤศจิกายน:
+- Final acceptance
+- Feature complete
+- ตรวจว่า flow หลักเล่นได้ครบ
+- เตรียม demo scenario
+- แก้ bug สำคัญก่อนเข้าสู่ช่วง buffer
+- Lock สิ่งที่จะใช้ demo จริง
+- Finalize deployment environment
+
+งานเล่มช่วง 1-15 พฤศจิกายน:
+- เขียนผลการพัฒนา
+- ใส่ภาพหน้าจอจริง
+- ใส่ flow การทำงานจริง
+- เขียนการทดสอบระบบ
+- เขียน deployment approach
+- เขียนข้อจำกัด / ปัญหาที่พบ
+- เขียนสรุปผล และ future work
+
+16-30 พฤศจิกายน:
+- Buffer
+- แก้ bug ที่เหลือ
+- Polish UX/UI
+- ปรับเล่มตาม feedback
+- เตรียม presentation
+- เตรียม demo video หรือ demo script
+- เขียน deployment notes ฉบับสรุป
+- ตรวจ final readiness
+
+ผลลัพธ์ที่ต้องได้:
+- ระบบเสร็จภายในสัปดาห์ที่ 2 ของพฤศจิกายน
+- มีเวลา buffer ครึ่งเดือน
+- deployment พร้อมใช้งานสำหรับ demo
+- งานเล่มพร้อมส่งและไม่ไปกองท้ายสุด
+
+============================================================
+3. Weekly Plan แบบสรุป
+============================================================
+
+W1  | 2026-05-05 ถึง 2026-05-10 | ศึกษา SCADA platform เจ้าอื่น
+W2  | 2026-05-11 ถึง 2026-05-17 | ทดลองใช้ platform และเก็บ pain point
+W3  | 2026-05-18 ถึง 2026-05-24 | สรุป product direction จาก pain point
+W4  | 2026-05-25 ถึง 2026-05-31 | ศึกษา tools ที่จะใช้ใน project
+
+W5  | 2026-06-01 ถึง 2026-06-07 | สรุป requirement และ architecture
+W6  | 2026-06-08 ถึง 2026-06-14 | จัด docs, skill, design direction
+W7  | 2026-06-15 ถึง 2026-06-21 | ทำ frontend shell และ layout demo
+W8  | 2026-06-22 ถึง 2026-06-30 | ทำ scene editor demo direction
+
+W9  | 2026-07-01 ถึง 2026-07-07 | Project create/open/settings
+W10 | 2026-07-08 ถึง 2026-07-14 | Scene editor core + ออกแบบ 3D component theme
+W11 | 2026-07-15 ถึง 2026-07-21 | Component/model library + 3D component พื้นฐาน
+W12 | 2026-07-22 ถึง 2026-07-31 | Tag config + MQTT Direct Topic + local persistence
+
+W13 | 2026-08-01 ถึง 2026-08-07 | Alarm config และ alarm log
+W14 | 2026-08-08 ถึง 2026-08-14 | Dashboard gauge/chart
+W15 | 2026-08-15 ถึง 2026-08-21 | Model action rules + frontend review
+W16 | 2026-08-22 ถึง 2026-08-31 | Permission concept + API/DB/gateway planning
+
+W17 | 2026-09-01 ถึง 2026-09-07 | Backend scaffold + Project API + DB migration
+W18 | 2026-09-08 ถึง 2026-09-14 | DB schema + project save/load
+W19 | 2026-09-15 ถึง 2026-09-21 | Tags/scenes/dashboard/alarms API + validation
+W20 | 2026-09-22 ถึง 2026-09-30 | Permission data model + backend/database integration test + thesis outline
+
+W21 | 2026-10-01 ถึง 2026-10-07 | WebSocket runtime gateway + MQTT Gateway
+W22 | 2026-10-08 ถึง 2026-10-14 | PLC Simulator/mock gateway + normalize เป็น tag values
+W23 | 2026-10-15 ถึง 2026-10-21 | เชื่อม frontend/backend runtime + deployment trial
+W24 | 2026-10-22 ถึง 2026-10-31 | Optional PLC จริง + permission/auth guard + E2E bug fix + เริ่มเขียนเล่มจริง
+
+W25 | 2026-11-01 ถึง 2026-11-07 | Full system integration test + deploy demo environment
+W26 | 2026-11-08 ถึง 2026-11-15 | Final acceptance / Feature complete / demo lock / เขียนเล่มส่วนผลการพัฒนา
+W27 | 2026-11-16 ถึง 2026-11-22 | Buffer: bug fix, thesis revision, polish, presentation
+W28 | 2026-11-23 ถึง 2026-11-30 | Buffer: demo, deployment notes, final cleanup, final thesis pack
+
+============================================================
+4. Milestone สำคัญ
+============================================================
+
+2026-05-31:
+- Research และ tool study เสร็จ
+
+2026-06-30:
+- Frontend demo direction ชัดเจน
+- รู้ว่า editor/platform ควรเดินต่อแบบไหน
+
+2026-07-31:
+- Frontend prototype มี project, scene, component, tag, MQTT direct topic,
+  และ local persistence เบื้องต้น
+
+2026-08-31:
+- Frontend prototype ค่อนข้างนิ่ง
+- API contract, database schema direction, gateway boundary พร้อมเริ่ม backend
+
+2026-09-30:
+- Backend + Database + API + Save/Load ใช้งานได้เสถียร
+- โครงสารบัญและหลักฐานงานเล่มเริ่มพร้อม
+
+2026-10-31:
+- Runtime หลักเชื่อม frontend/backend/database/gateway ได้ครบ
+- Deployment trial ผ่าน
+- งานเล่มส่วนต้นเริ่มเขียนจริงได้
+
+2026-11-15:
+- Feature complete
+- ระบบควรเล่น demo หลักได้ครบ
+- Deployment environment หลักพร้อม
+- เนื้อหาเล่มส่วนผลการพัฒนาและการทดสอบต้องเกือบครบ
+
+2026-11-30:
+- Buffer จบ
+- Docs, thesis, demo, final cleanup, deployment notes พร้อม
+
+============================================================
+5. Risk และแนวทางลดความเสี่ยง
+============================================================
+
+Risk 1: PLC/Gateway pattern เปลี่ยนกลางทาง
+แนวทาง:
+- ทำ PLC/Gateway เป็น protocol adapter
+- ให้ทุกอย่างอ่านผ่าน canonical tag values
+- ใช้ PLC Simulator/mock gateway เป็น demo path หลักจนกว่า PLC จริงพร้อม
+
+Risk 2: Backend เริ่มเร็วเกินไปทั้งที่ frontend direction ยังไม่นิ่ง
+แนวทาง:
+- ใช้มิถุนายนเพื่อทดลอง frontend demo
+- ใช้กรกฎาคม-สิงหาคมทำ frontend prototype ให้ค่อนข้างนิ่ง
+- Lock frontend direction ก่อนเริ่ม backend หนัก
+
+Risk 3: งาน 3D component ใช้เวลานานเกิน
+แนวทาง:
+- ทำเฉพาะ component 3D พื้นฐานก่อน
+- จำกัดเวลาออกแบบไม่เกิน 1 สัปดาห์
+- ใช้ theme/material rule เดียวกันเพื่อลดเวลาตัดสินใจ
+
+Risk 4: กันยายน scope แน่นเกินไป
+แนวทาง:
+- กันยายนโฟกัส backend/database/API/save-load ให้เสถียร
+- เลื่อน MQTT Gateway และ PLC Simulator ไปตุลาคม
+- ไม่เริ่ม PLC จริงในกันยายน
+
+Risk 5: ตุลาคม gateway/PLC ไม่เสถียร
+แนวทาง:
+- ทำ MQTT Gateway ก่อน
+- ทำ PLC Simulator/mock gateway เป็นหลัก
+- PLC จริงเป็น optional integration ถ้าอุปกรณ์และสเปกพร้อม
+
+Risk 6: งานเล่มไปกองช่วงท้ายเกินไป
+แนวทาง:
+- เริ่มขึ้นโครงเล่มในกันยายน
+- เริ่มเขียนส่วนต้นในตุลาคม
+- เขียนผลการพัฒนาและการทดสอบในต้นพฤศจิกายน
+- ใช้ครึ่งหลังพฤศจิกายนสำหรับ revision ไม่ใช่เริ่มเขียนจากศูนย์
+
+Risk 7: Deployment เจอปัญหาช่วงใกล้ demo
+แนวทาง:
+- ทดลอง deployment ตั้งแต่ตุลาคม
+- มี deployment trial ก่อน final demo
+- Lock demo environment ภายในสัปดาห์ที่ 2 ของพฤศจิกายน
+
+Risk 8: งานไปกองปลายเดือนพฤศจิกายน
+แนวทาง:
+- ตั้ง feature complete ที่ 2026-11-15
+- ไม่เพิ่ม scope ใหญ่ใหม่ในพฤศจิกายน
+- เก็บ 2026-11-16 ถึง 2026-11-30 เป็น buffer จริง
+
+============================================================
+6. Definition of Done ระดับโครงการ
+============================================================
+
+เมื่อถึง 2026-11-15 ระบบควรมีสิ่งต่อไปนี้:
+
+- สร้าง/เปิด/แก้ project ได้
+- สร้างและแก้ scene ได้
+- วาง component/model ใน scene ได้
+- มี component 3D พื้นฐานที่เข้ากับ theme เดียวกัน
+- ผูก tag กับ component/model ได้
+- MQTT Direct Topic ใช้งานได้
+- Backend API ใช้งานได้
+- Database เก็บ project/config/runtime ที่จำเป็นได้
+- Project save/load ผ่าน backend/database ได้
+- Gateway config ใช้งานได้
+- MQTT Gateway หรือ PLC Simulator ส่งข้อมูลเข้า tag กลางได้
+- PLC จริงเชื่อมได้ถ้าอุปกรณ์และสเปกพร้อม แต่ไม่ใช่ blocker ของ demo หลัก
+- Text Output, Switch, Gauge, Dashboard, Alarm ทำงานจาก tag values ได้
+- Model action ทำงานจาก tag values ได้
+- User permission ใน project มีพื้นฐาน:
+  - watchable ดูได้ แต่ control/edit ไม่ได้
+  - controlable ดูและ control ได้ แต่ edit config/layout ไม่ได้
+  - editable ดู, control, และ edit config/layout ได้
+- Full integration test ผ่านใน flow หลัก
+- Demo scenario เล่นได้ครบ
+- Demo environment deploy ได้จริง
+- งานเล่มมีเนื้อหาครบตามที่ต้องส่ง

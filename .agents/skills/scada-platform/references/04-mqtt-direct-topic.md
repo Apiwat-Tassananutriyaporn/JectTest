@@ -45,16 +45,16 @@ Future note:
 
 | Concern | Owner | Notes |
 |---|---|---|
-| Broker config form | `src/features/project-settings/` | UI draft state and validation display |
-| MQTT connection behavior | `src/services/mqtt/` | connect, disconnect, test, subscribe, publish |
-| MQTT connection status | `src/services/mqtt/` | status lifecycle and last error |
-| Tag definitions | `src/features/tags/` | name, mode, topic, unit, data source |
-| Tag runtime values | `src/features/tags/` | latest value, raw payload, timestamp |
-| Text Output binding | `src/features/components/` | reads tag value |
-| Text Input publishing | `src/features/components/` | sends publish intent |
-| Switch publishing/status | `src/features/components/` | sends publish intent and reads tag value |
-| Alarms | `src/features/alarms/` | reads tag value, evaluates rules |
-| Dashboard | `src/features/dashboard/` | reads tag value |
+| Broker config form | `frontend/src/features/project-settings/` | UI draft state and validation display |
+| MQTT connection behavior | `frontend/src/services/mqtt/` | connect, disconnect, test, subscribe, publish |
+| MQTT connection status | `frontend/src/services/mqtt/` | status lifecycle and last error |
+| Tag definitions | `frontend/src/features/tags/` | name, mode, topic, unit, data source |
+| Tag runtime values | `frontend/src/features/tags/` | latest value, raw payload, timestamp |
+| Text Output binding | `frontend/src/features/components/` | reads tag value |
+| Text Input publishing | `frontend/src/features/components/` | sends publish intent |
+| Switch publishing/status | `frontend/src/features/components/` | sends publish intent and reads tag value |
+| Alarms | `frontend/src/features/alarms/` | reads tag value, evaluates rules |
+| Dashboard | `frontend/src/features/dashboard/` | reads tag value |
 
 Important rule:
 
@@ -396,7 +396,7 @@ depending on a not-yet-confirmed PLC topic/payload pattern.
 
 ## Implementation Checklist
 
-For `src/services/mqtt/`:
+For `frontend/src/services/mqtt/`:
 
 - Has clear connect/disconnect/test API.
 - Uses only browser-supported `ws://` and `wss://` for real connection.
@@ -407,7 +407,7 @@ For `src/services/mqtt/`:
 - Does not import React UI components.
 - Does not own tag definitions or tag values.
 
-For `src/features/tags/`:
+For `frontend/src/features/tags/`:
 
 - Owns tag definitions.
 - Owns tag runtime values.
@@ -416,7 +416,7 @@ For `src/features/tags/`:
 - Does not create MQTT clients.
 - Does not parse gateway JSON payloads in Version 07.
 
-For `src/features/components/`:
+For `frontend/src/features/components/`:
 
 - Reads tag values from Tags module.
 - Sends publish intent through Tags/MQTT flow.

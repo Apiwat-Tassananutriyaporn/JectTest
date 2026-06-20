@@ -11,11 +11,23 @@ with the active requirement, architecture, data model, and screen flow.
 ## Core Workflow
 
 1. Identify the requested work area.
-2. Read only the relevant reference files below.
-3. Check the active requirement and phase boundary before changing code.
-4. Keep implementation inside the owning feature/service folder.
-5. Before final response, verify the change does not introduce out-of-scope
+2. Read product and design context when the request touches product direction,
+   frontend UI, UX, theme, layout, visual design, or implementation.
+3. Read only the relevant reference files below.
+4. Check the active requirement and phase boundary before changing code.
+5. Keep implementation inside the owning feature/service folder.
+6. Before final response, verify the change does not introduce out-of-scope
    Version 07 behavior.
+
+## Product and Design Context
+
+- For product direction, target users, brand personality, anti-references,
+  design principles, or accessibility goals: read `../../../PRODUCT.md`.
+- For frontend UI, UX, theme, dark/light mode, design tokens, layout, visual
+  styling, Figma reference, Impeccable-guided work, or component polish: read
+  `../../../DESIGN.md`.
+- If either file is missing, continue with the closest available requirement or
+  reference file, then mention the missing context in the final response.
 
 ## Reference Routing
 
@@ -48,14 +60,15 @@ with the active requirement, architecture, data model, and screen flow.
 
 ## Folder Ownership Rules
 
-- MQTT behavior belongs in `src/services/mqtt/`.
-- Tag definitions and runtime tag values belong in `src/features/tags/`.
-- Scene editor behavior belongs in `src/features/scene/`.
-- SCADA component rendering/config belongs in `src/features/components/`.
-- Dashboard behavior belongs in `src/features/dashboard/`.
-- Alarm rules/events belong in `src/features/alarms/`.
-- Project settings UI belongs in `src/features/project-settings/`.
-- Persistence belongs in `src/services/persistence/`.
+- MQTT behavior belongs in `frontend/src/services/mqtt/`.
+- Tag definitions and runtime tag values belong in `frontend/src/features/tags/`.
+- Scene editor behavior belongs in `frontend/src/features/scene/`.
+- SCADA component rendering/config belongs in
+  `frontend/src/features/components/`.
+- Dashboard behavior belongs in `frontend/src/features/dashboard/`.
+- Alarm rules/events belong in `frontend/src/features/alarms/`.
+- Project settings UI belongs in `frontend/src/features/project-settings/`.
+- Persistence belongs in `frontend/src/services/persistence/`.
 
 ## Final Check
 

@@ -648,17 +648,17 @@ Example:
 
 | Model | Owner | Notes |
 |---|---|---|
-| `Project` | `src/features/project/` | Root project metadata and active project |
-| `MqttConnectionConfig` | `src/services/mqtt/` + settings UI | Service owns behavior; settings owns form |
-| `TagDefinition` | `src/features/tags/` | Canonical tag config |
-| `TagRuntimeValue` | `src/features/tags/` | Runtime values from MQTT |
-| `Scene` | `src/features/scene/` | Scene object graph and camera |
-| `ModelAsset` | `src/features/models/` | Imported model metadata |
-| `ComponentSceneObject` | `src/features/components/` + scene | Component config rendered in scene |
-| `AlarmRule` / `AlarmEvent` | `src/features/alarms/` | Evaluation and log |
-| `Dashboard` / `DashboardPanel` | `src/features/dashboard/` | Panel layout and config |
-| `PermissionState` | `src/features/permissions/` | Client-side only in Version 07 |
-| `ProjectSnapshot` | `src/services/persistence/` | Save/load boundary |
+| `Project` | `frontend/src/features/project/` | Root project metadata and active project |
+| `MqttConnectionConfig` | `frontend/src/services/mqtt/` + settings UI | Service owns behavior; settings owns form |
+| `TagDefinition` | `frontend/src/features/tags/` | Canonical tag config |
+| `TagRuntimeValue` | `frontend/src/features/tags/` | Runtime values from MQTT |
+| `Scene` | `frontend/src/features/scene/` | Scene object graph and camera |
+| `ModelAsset` | `frontend/src/features/models/` | Imported model metadata |
+| `ComponentSceneObject` | `frontend/src/features/components/` + scene | Component config rendered in scene |
+| `AlarmRule` / `AlarmEvent` | `frontend/src/features/alarms/` | Evaluation and log |
+| `Dashboard` / `DashboardPanel` | `frontend/src/features/dashboard/` | Panel layout and config |
+| `PermissionState` | `frontend/src/features/permissions/` | Client-side only in Version 07 |
+| `ProjectSnapshot` | `frontend/src/services/persistence/` | Save/load boundary |
 
 ## Review Checklist
 
