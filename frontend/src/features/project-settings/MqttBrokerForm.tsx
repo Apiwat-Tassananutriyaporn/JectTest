@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp, Eye, EyeOff, RadioTower, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { testMqttConnection } from "../../services/mqtt";
 import { Button, IconButton, SelectField, StatusPill, TextField } from "../../shared/ui";
 import type { MqttConnectionConfig, MqttConnectionStatus, MqttPollingOption } from "../project";
 
@@ -23,6 +24,13 @@ const pollingOptions: MqttPollingOption[] = [
   "1 min",
 ];
 
+type MqttWebSocketAddressParts = {
+  host: string;
+  path: string;
+  port: string;
+  protocol: "ws://" | "wss://";
+};
+
 function getStatusLabel(status: MqttConnectionStatus) {
   if (status === "connected") {
     return "Connected";
@@ -39,6 +47,59 @@ function getStatusLabel(status: MqttConnectionStatus) {
   return "Not Tested";
 }
 
+function getDefaultPort(protocol: MqttWebSocketAddressParts["protocol"]) {
+  return protocol === "wss://" ? "443" : "80";
+}
+
+function normalizePath(path: string) {
+  const trimmedPath = path.trim();
+
+  if (!trimmedPath) {
+    return "";
+  }
+
+  return trimmedPath.startsWith("/") ? trimmedPath : `/${trimmedPath}`;
+}
+
+function parseMqttAddress(address: string): MqttWebSocketAddressParts {
+  const fallback: MqttWebSocketAddressParts = {
+    host: "",
+    path: "/mqtt",
+    port: "443",
+    protocol: "wss://",
+  };
+
+  if (!address.trim()) {
+    return fallback;
+  }
+
+  try {
+    const url = new URL(address.trim());
+    const protocol = url.protocol === "ws:" ? "ws://" : "wss://";
+
+    return {
+      host: url.hostname,
+      path: url.pathname === "/" ? "/mqtt" : url.pathname,
+      port: url.port || getDefaultPort(protocol),
+      protocol,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function buildMqttAddress(parts: MqttWebSocketAddressParts) {
+  const host = parts.host.trim();
+  const port = parts.port.trim();
+  const path = normalizePath(parts.path);
+
+  if (!host) {
+    return "";
+  }
+
+  return `${parts.protocol}${host}${port ? `:${port}` : ""}${path}`;
+}
+
 export function MqttBrokerForm({ config, onChange }: MqttBrokerFormProps) {
   const [securityOpen, setSecurityOpen] = useState(true);
   const [tlsOpen, setTlsOpen] = useState(false);
@@ -50,46 +111,38 @@ export function MqttBrokerForm({ config, onChange }: MqttBrokerFormProps) {
     onChange({ ...config, ...patch });
   };
 
-  const handleTestConnection = () => {
-    const address = config.address.trim();
+  const updateAddressPart = (patch: Partial<MqttWebSocketAddressParts>) => {
+    const currentParts = parseMqttAddress(config.address);
+    const nextParts = { ...currentParts, ...patch };
+    updateConfig({ address: buildMqttAddress(nextParts) });
+  };
 
-    if (!config.name.trim()) {
+  const handleTestConnection = async () => {
+    setStatus("connecting");
+    setMessage("Connecting to MQTT broker...");
+
+    try {
+      await testMqttConnection(config);
+      setStatus("connected");
+      setMessage("Connected. The browser can reach this MQTT WebSocket broker.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "MQTT connection failed.";
       setStatus("error");
-      setMessage("Name is required.");
-      return;
+      setMessage(message);
     }
-
-    if (!address) {
-      setStatus("error");
-      setMessage("Address is required.");
-      return;
-    }
-
-    if (!config.clientId.trim()) {
-      setStatus("error");
-      setMessage("Client ID is required for Test Connection.");
-      return;
-    }
-
-    if (address.startsWith("mqtt://")) {
-      setStatus("error");
-      setMessage("Browser cannot test mqtt:// directly in Version 07. Use ws:// or wss://.");
-      return;
-    }
-
-    if (!address.startsWith("ws://") && !address.startsWith("wss://")) {
-      setStatus("error");
-      setMessage("Unsupported protocol. Test Connection supports ws:// or wss:// only.");
-      return;
-    }
-
-    setStatus("connected");
-    setMessage("Mock test passed. Real MQTT connection will be implemented in the MQTT service.");
   };
 
   const SecurityIcon = securityOpen ? ChevronUp : ChevronDown;
   const TlsIcon = tlsOpen ? ChevronUp : ChevronDown;
   const PasswordIcon = passwordVisible ? EyeOff : Eye;
+  const addressParts = parseMqttAddress(config.address);
+  const normalizedAddress = buildMqttAddress(addressParts);
+
+  useEffect(() => {
+    if (normalizedAddress && config.address.trim() !== normalizedAddress) {
+      updateConfig({ address: normalizedAddress });
+    }
+  }, [config.address, normalizedAddress]);
 
   return (
     <section className="mqtt-form" aria-label="MQTT broker connecting form">
@@ -134,11 +187,41 @@ export function MqttBrokerForm({ config, onChange }: MqttBrokerFormProps) {
         </label>
       </div>
 
-      <TextField
-        label="Address (mqtt://[server]:[port])"
-        onChange={(event) => updateConfig({ address: event.target.value })}
-        value={config.address}
-      />
+      <div className="mqtt-address-grid">
+        <SelectField
+          label="Protocol"
+          onChange={(event) =>
+            updateAddressPart({ protocol: event.target.value as MqttWebSocketAddressParts["protocol"] })
+          }
+          value={addressParts.protocol}
+        >
+          <option value="ws://">ws://</option>
+          <option value="wss://">wss://</option>
+        </SelectField>
+        <TextField
+          aria-label="MQTT host"
+          label="Host"
+          onChange={(event) => updateAddressPart({ host: event.target.value })}
+          placeholder="smartfarm.priorsolution.co.th"
+          value={addressParts.host}
+        />
+      </div>
+
+      <div className="mqtt-endpoint-grid">
+        <TextField
+          inputMode="numeric"
+          label="Port"
+          onChange={(event) => updateAddressPart({ port: event.target.value })}
+          placeholder="443"
+          value={addressParts.port}
+        />
+        <TextField
+          label="Path"
+          onChange={(event) => updateAddressPart({ path: event.target.value })}
+          placeholder="/mqtt"
+          value={addressParts.path}
+        />
+      </div>
 
       <section className="settings-accordion">
         <button

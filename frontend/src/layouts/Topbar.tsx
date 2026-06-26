@@ -17,10 +17,6 @@ const viewMeta: Record<ActiveView, { title: string; description: string }> = {
     description: "Review active conditions, event history, and operational severity.",
     title: "Alarm Log",
   },
-  dashboard: {
-    description: "Track sensor summaries, KPIs, and panel-driven status views.",
-    title: "Dashboard",
-  },
   scene: {
     description: "World-anchored components, MQTT tags, and alarm-ready state.",
     title: "Scene Editor",

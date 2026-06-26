@@ -1,5 +1,11 @@
 # 07 Requirement - 3D SCADA Web Platform
 
+## Current Demo Scope Adjustment - 2026-06-26
+
+- Current demo priority is Project Settings, MQTT WebSocket connection, Direct MQTT Topic tag config, scene component binding, publish/subscribe runtime, tag runtime status/error display, basic tag-driven Alarm Log, and local browser persistence.
+- Dashboard page is removed from the current demo UI. Dashboard-related items in this document are kept as future/product direction and should not be treated as the next implementation task until explicitly re-confirmed.
+- Full alarm rule configuration UI and explicit Save feedback are paused until the user confirms the next scope.
+
 ## Version Update Frontend
 - Version นี้ update จาก `C:\JectTest\doc\req\06-requirement.md`
 - ไฟล์นี้เป็น requirement ฉบับ Version 07 สำหรับโปรเจกต์ `C:\JectTest`

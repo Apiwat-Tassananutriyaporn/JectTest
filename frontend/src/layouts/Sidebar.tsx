@@ -1,4 +1,4 @@
-import { Activity, AlarmClock, Boxes, LayoutDashboard, Network, Plus, RadioTower, ToggleRight, Type, Tags } from "lucide-react";
+import { Activity, AlarmClock, Boxes, Network, Plus, RadioTower, ToggleRight, Type, Tags } from "lucide-react";
 import type { ActiveView, SidebarMode } from "../app/App";
 import { sceneToolboxItems } from "../features/scene/constants";
 import type { SceneToolboxItemKind } from "../features/scene/types";
@@ -7,7 +7,6 @@ import { Button, IconButton } from "../shared/ui";
 const views = [
   { label: "Scene", icon: Boxes, value: "scene" },
   { label: "Alarm Log", icon: AlarmClock, value: "alarm-log" },
-  { label: "Dashboard", icon: LayoutDashboard, value: "dashboard" },
 ];
 
 const toolIcons: Record<SceneToolboxItemKind, typeof Activity> = {

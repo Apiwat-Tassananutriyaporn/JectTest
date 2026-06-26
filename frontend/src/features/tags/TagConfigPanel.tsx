@@ -2,6 +2,7 @@ import { Plus, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button, SelectField, TextField } from "../../shared/ui";
 import { defaultTagDraft } from "./constants";
+import { useTagRuntimeStore } from "./store/useTagRuntimeStore";
 import type { TagDefinition, TagMode } from "./types";
 
 type TagConfigPanelProps = {
@@ -35,10 +36,48 @@ function toDraft(tag: TagDefinition): TagDraft {
   };
 }
 
+function getRuntimeTone(status?: string) {
+  if (status === "fresh") {
+    return "online";
+  }
+
+  if (status === "error") {
+    return "danger";
+  }
+
+  if (status === "stale") {
+    return "warning";
+  }
+
+  return "offline";
+}
+
+function formatRuntimeValue(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return "--";
+  }
+
+  return String(value);
+}
+
+function formatRuntimeTime(receivedAt?: string) {
+  if (!receivedAt) {
+    return "No update yet";
+  }
+
+  return new Date(receivedAt).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 export function TagConfigPanel({ onChange, showHeader = true, tags }: TagConfigPanelProps) {
   const [draft, setDraft] = useState<TagDraft>(defaultTagDraft);
   const [editingTagId, setEditingTagId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const runtimeByTagId = useTagRuntimeStore((state) => state.runtimeByTagId);
+  const selectedRuntime = editingTagId ? runtimeByTagId[editingTagId] : null;
 
   const resetDraft = () => {
     setDraft(defaultTagDraft);
@@ -151,21 +190,59 @@ export function TagConfigPanel({ onChange, showHeader = true, tags }: TagConfigP
 
       <div className="tag-config-layout">
         <div className="tag-config-list" aria-label="Existing tags">
-          {tags.map((tag) => (
-            <button
-              className={`tag-list-item${editingTagId === tag.id ? " is-active" : ""}`}
-              key={tag.id}
-              onClick={() => handleSelectTag(tag)}
-              type="button"
-            >
-              <strong>{tag.name}</strong>
-              <span>{tag.topicPath}</span>
-              <small>{tag.mode} / {tag.payloadType}</small>
-            </button>
-          ))}
+          {tags.map((tag) => {
+            const runtime = runtimeByTagId[tag.id];
+            const runtimeTone = getRuntimeTone(runtime?.status);
+
+            return (
+              <button
+                className={`tag-list-item${editingTagId === tag.id ? " is-active" : ""}`}
+                key={tag.id}
+                onClick={() => handleSelectTag(tag)}
+                type="button"
+              >
+                <span className="tag-list-heading">
+                  <strong>{tag.name}</strong>
+                  <span className={`tag-runtime-badge tag-runtime-badge-${runtimeTone}`}>
+                    {runtime?.status ?? "idle"}
+                  </span>
+                </span>
+                <span>{tag.topicPath}</span>
+                <small>{tag.mode} / {tag.payloadType}</small>
+                <span className="tag-runtime-summary">
+                  Value: {formatRuntimeValue(runtime?.value)}
+                  <span>{formatRuntimeTime(runtime?.receivedAt)}</span>
+                </span>
+                {runtime?.error ? <small className="tag-runtime-error">{runtime.error}</small> : null}
+              </button>
+            );
+          })}
         </div>
 
         <div className="tag-config-form">
+          {selectedRuntime ? (
+            <div className="tag-runtime-detail">
+              <div>
+                <span>Runtime Status</span>
+                <strong>{selectedRuntime.status}</strong>
+              </div>
+              <div>
+                <span>Latest Value</span>
+                <strong>{formatRuntimeValue(selectedRuntime.value)}</strong>
+              </div>
+              <div>
+                <span>Last Update</span>
+                <strong>{formatRuntimeTime(selectedRuntime.receivedAt)}</strong>
+              </div>
+              {selectedRuntime.error ? (
+                <div className="tag-runtime-detail-error">
+                  <span>Error</span>
+                  <strong>{selectedRuntime.error}</strong>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
           <TextField
             label="Tag Name"
             onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))}

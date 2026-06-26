@@ -2,11 +2,9 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import type { ActiveView, SidebarMode, ThemeMode } from "../app/App";
 import { AlarmLogView } from "../features/alarms/AlarmLogView";
-import { DashboardView } from "../features/dashboard/DashboardView";
 import type { ProjectSummary } from "../features/project";
 import { ProjectSettingsModal } from "../features/project-settings";
 import { SceneView } from "../features/scene/SceneView";
-import { EditorLayout } from "./EditorLayout";
 import { RightRail } from "./RightRail";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
@@ -33,7 +31,6 @@ export function AppShell({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const content = {
     "alarm-log": <AlarmLogView />,
-    dashboard: <DashboardView />,
     scene: <SceneView />,
   } satisfies Record<ActiveView, ReactNode>;
 

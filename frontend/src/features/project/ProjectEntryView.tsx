@@ -49,7 +49,7 @@ export function ProjectEntryView() {
           <h1>Project Workspace</h1>
           <p>
             Create or open a SCADA project before entering the scene editor,
-            alarm log, and dashboard workspace.
+            MQTT tag runtime, and alarm log workspace.
           </p>
         </div>
 

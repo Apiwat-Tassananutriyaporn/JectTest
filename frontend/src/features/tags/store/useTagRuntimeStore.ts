@@ -1,4 +1,11 @@
 import { create } from "zustand";
+import {
+  connectMqtt,
+  disconnectMqtt,
+  isBrowserMqttAddress,
+  publishMqttMessage,
+  subscribeMqttTopics,
+} from "../../../services/mqtt";
 import type { MqttConnectionStatus, MqttPollingOption, ProjectSummary } from "../../project";
 import type { TagDefinition, TagRuntimeValue } from "../types";
 
@@ -42,6 +49,11 @@ function clearMockSession() {
   }
 }
 
+function clearRuntimeSession() {
+  clearMockSession();
+  disconnectMqtt();
+}
+
 function createRuntimeSeed(tags: TagDefinition[]) {
   const runtimeByTagId: Record<string, TagRuntimeValue> = {};
   const runtimeByTopicPath: Record<string, TagRuntimeValue> = {};
@@ -60,6 +72,78 @@ function createRuntimeSeed(tags: TagDefinition[]) {
   });
 
   return { runtimeByTagId, runtimeByTopicPath };
+}
+
+function coercePayloadValue(payloadText: string) {
+  const trimmedPayload = payloadText.trim();
+
+  if (!trimmedPayload) {
+    return "";
+  }
+
+  const numericValue = Number(trimmedPayload);
+
+  if (Number.isFinite(numericValue)) {
+    return numericValue;
+  }
+
+  return payloadText;
+}
+
+function updateRuntimeFromMessage(message: { payloadText: string; receivedAt: string; topic: string }, set: (partial: Partial<TagRuntimeState>) => void, get: () => TagRuntimeState) {
+  const matchingRuntimes = Object.values(get().runtimeByTagId).filter((runtime) => runtime.sourceTopic === message.topic);
+
+  if (!matchingRuntimes.length) {
+    return;
+  }
+
+  const nextValue = coercePayloadValue(message.payloadText);
+  const runtimeByTagId = { ...get().runtimeByTagId };
+  const runtimeByTopicPath = { ...get().runtimeByTopicPath };
+
+  matchingRuntimes.forEach((runtime) => {
+    const nextRuntime: TagRuntimeValue = {
+      ...runtime,
+      rawPayload: message.payloadText,
+      receivedAt: message.receivedAt,
+      sourceTopic: message.topic,
+      status: "fresh",
+      value: nextValue,
+    };
+
+    runtimeByTagId[runtime.tagId] = nextRuntime;
+    runtimeByTopicPath[message.topic] = nextRuntime;
+  });
+
+  set({
+    lastUpdatedAt: message.receivedAt,
+    runtimeByTagId,
+    runtimeByTopicPath,
+  });
+}
+
+function markTopicsAsError(topics: string[], errorMessage: string, set: (partial: Partial<TagRuntimeState>) => void, get: () => TagRuntimeState) {
+  const topicSet = new Set(topics);
+  const runtimeByTagId = { ...get().runtimeByTagId };
+  const runtimeByTopicPath = { ...get().runtimeByTopicPath };
+
+  Object.values(get().runtimeByTagId)
+    .filter((runtime) => runtime.sourceTopic && topicSet.has(runtime.sourceTopic))
+    .forEach((runtime) => {
+      const nextRuntime: TagRuntimeValue = {
+        ...runtime,
+        error: errorMessage,
+        status: "error",
+      };
+
+      runtimeByTagId[runtime.tagId] = nextRuntime;
+      runtimeByTopicPath[runtime.sourceTopic!] = nextRuntime;
+    });
+
+  set({
+    runtimeByTagId,
+    runtimeByTopicPath,
+  });
 }
 
 function inferMockValue(tag: TagDefinition, previousValue: TagRuntimeValue["value"]) {
@@ -127,10 +211,64 @@ function applyMockCycle(tags: TagDefinition[], set: (partial: Partial<TagRuntime
   });
 }
 
+function startMockSession(project: ProjectSummary, set: (partial: Partial<TagRuntimeState>) => void, get: () => TagRuntimeState) {
+  set({
+    connectionStatus: "connecting",
+    isSimulated: true,
+  });
+
+  connectTimeout = setTimeout(() => {
+    set({ connectionStatus: "connected" });
+    applyMockCycle(project.tags, set, get);
+
+    mockInterval = setInterval(() => {
+      if (get().connectionStatus !== "connected") {
+        return;
+      }
+
+      applyMockCycle(project.tags, set, get);
+    }, pollingToMs[project.mqttConnection?.polling ?? "5 sec"]);
+  }, 700);
+}
+
+function startMqttSession(project: ProjectSummary, set: (partial: Partial<TagRuntimeState>) => void, get: () => TagRuntimeState) {
+  const subscribableTopics = project.tags
+    .filter((tag) => tag.mode === "subscribe" || tag.mode === "pubsub")
+    .map((tag) => tag.topicPath);
+
+  set({
+    connectionStatus: "connecting",
+    isSimulated: false,
+  });
+
+  try {
+    connectMqtt(project.mqttConnection!, {
+      onConnect: () => {
+        void subscribeMqttTopics(subscribableTopics).catch((error: Error) => {
+          markTopicsAsError(subscribableTopics, error.message, set, get);
+          set({ connectionStatus: "connected" });
+          console.error(error);
+        });
+      },
+      onError: () => {
+        set({ connectionStatus: "error" });
+      },
+      onMessage: (message) => {
+        updateRuntimeFromMessage(message, set, get);
+      },
+      onStatusChange: (connectionStatus) => {
+        set({ connectionStatus });
+      },
+    });
+  } catch {
+    set({ connectionStatus: "error" });
+  }
+}
+
 export const useTagRuntimeStore = create<TagRuntimeState>((set, get) => ({
   connectionStatus: "idle",
   hydrateProject: (project) => {
-    clearMockSession();
+    clearRuntimeSession();
 
     if (!project) {
       set({
@@ -154,23 +292,12 @@ export const useTagRuntimeStore = create<TagRuntimeState>((set, get) => ({
       return;
     }
 
-    set({
-      connectionStatus: "connecting",
-      isSimulated: true,
-    });
+    if (isBrowserMqttAddress(project.mqttConnection.address)) {
+      startMqttSession(project, set, get);
+      return;
+    }
 
-    connectTimeout = setTimeout(() => {
-      set({ connectionStatus: "connected" });
-      applyMockCycle(project.tags, set, get);
-
-      mockInterval = setInterval(() => {
-        if (get().connectionStatus !== "connected") {
-          return;
-        }
-
-        applyMockCycle(project.tags, set, get);
-      }, pollingToMs[project.mqttConnection?.polling ?? "5 sec"]);
-    }, 700);
+    startMockSession(project, set, get);
   },
   isSimulated: false,
   lastUpdatedAt: null,
@@ -202,6 +329,27 @@ export const useTagRuntimeStore = create<TagRuntimeState>((set, get) => ({
         [topicPath]: nextRuntime,
       },
     }));
+
+    if (get().connectionStatus === "connected" && !get().isSimulated) {
+      void publishMqttMessage(topicPath, String(nextValue)).catch((error: Error) => {
+        const errorRuntime: TagRuntimeValue = {
+          ...nextRuntime,
+          error: error.message,
+          status: "error",
+        };
+
+        set((state) => ({
+          runtimeByTagId: {
+            ...state.runtimeByTagId,
+            [nextRuntime.tagId]: errorRuntime,
+          },
+          runtimeByTopicPath: {
+            ...state.runtimeByTopicPath,
+            [topicPath]: errorRuntime,
+          },
+        }));
+      });
+    }
   },
   runtimeByTagId: {},
   runtimeByTopicPath: {},

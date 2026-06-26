@@ -4,7 +4,7 @@ import { useTagRuntimeStore } from "../features/tags";
 import { AppShell } from "../layouts/AppShell";
 
 export type ThemeMode = "dark" | "light";
-export type ActiveView = "scene" | "alarm-log" | "dashboard";
+export type ActiveView = "scene" | "alarm-log";
 export type SidebarMode = "views" | "toolbox";
 
 export function App() {

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Settings, Tags } from "lucide-react";
+import { Settings, Tags } from "lucide-react";
 import type { ActiveView } from "../app/App";
 import { IconButton } from "../shared/ui";
 
@@ -25,14 +25,6 @@ export function RightRail({ activeView, onChangeView }: RightRailProps) {
         variant="rail-button"
       >
         <Tags size={17} />
-      </IconButton>
-      <IconButton
-        active={activeView === "dashboard"}
-        aria-label="Dashboard"
-        onClick={() => onChangeView("dashboard")}
-        variant="rail-button"
-      >
-        <LayoutDashboard size={17} />
       </IconButton>
     </aside>
   );

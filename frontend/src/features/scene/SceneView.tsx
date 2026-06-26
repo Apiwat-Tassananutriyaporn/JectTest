@@ -7,7 +7,6 @@ import type { SceneObjectModel, SceneToolboxItemKind } from "./types";
 
 export function SceneView() {
   const activeProject = useProjectStore((state) => state.activeProject);
-  const activeTool = useSceneEditorStore((state) => state.activeTool);
   const addObjectFromTool = useSceneEditorStore((state) => state.addObjectFromTool);
   const deselectObject = useSceneEditorStore((state) => state.deselectObject);
   const deleteObject = useSceneEditorStore((state) => state.deleteObject);
@@ -15,7 +14,6 @@ export function SceneView() {
   const sceneObjects = useSceneEditorStore((state) => state.sceneObjects);
   const selectedObjectId = useSceneEditorStore((state) => state.selectedObjectId);
   const selectObject = useSceneEditorStore((state) => state.selectObject);
-  const setActiveTool = useSceneEditorStore((state) => state.setActiveTool);
   const updateObject = useSceneEditorStore((state) => state.updateObject);
   const connectionStatus = useTagRuntimeStore((state) => state.connectionStatus);
   const publishTagValue = useTagRuntimeStore((state) => state.publishTagValue);
@@ -298,13 +296,11 @@ export function SceneView() {
 
   return (
     <EditorLayout
-      activeTool={activeTool}
       canDeleteSelectedObject={Boolean(selectedObject)}
       canCopySelectedObject={Boolean(selectedObject)}
       canPasteObject={hasClipboardObject}
       onCopySelectedObject={copySelectedObject}
       onBackgroundPointerDown={deselectObject}
-      onChangeTool={setActiveTool}
       onDeleteSelectedObject={deleteSelectedObject}
       onSceneDragLeave={() => setIsDropTarget(false)}
       onSceneDragOver={(event) => {
@@ -339,12 +335,8 @@ export function SceneView() {
         event.stopPropagation();
         selectObject(object.id);
 
-        if (activeTool === "select") {
-          return;
-        }
-
         interactionRef.current = {
-          mode: activeTool === "resize" ? "resize" : "move",
+          mode: "move",
           objectId: object.id,
           originHeight: object.height,
           originWidth: object.width,
@@ -386,7 +378,6 @@ export function SceneView() {
       onResizeHandlePointerDown={(event, object) => {
         event.stopPropagation();
         selectObject(object.id);
-        setActiveTool("resize");
 
         interactionRef.current = {
           mode: "resize",

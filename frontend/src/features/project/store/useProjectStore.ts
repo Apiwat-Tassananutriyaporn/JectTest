@@ -1,4 +1,10 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import {
+  getBrowserLocalStorage,
+  localPersistenceKeys,
+  localPersistenceVersion,
+} from "../../../services/persistence";
 import { tagSeed } from "../../tags";
 import { defaultMqttConnection, projectSeed } from "../constants";
 import type { MqttConnectionConfig, ProjectSummary, ProjectType, TagDefinition } from "../types";
@@ -28,47 +34,60 @@ function formatDateTime(date: Date) {
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
-export const useProjectStore = create<ProjectState>((set) => ({
-  activeProject: null,
-  createProject: (name, type) =>
-    set((state) => {
-      const nextProject = {
-        id: createProjectId(name),
-        mqttConnection: type === "mqtt_client" ? { ...defaultMqttConnection, id: `mqtt-${Date.now()}` } : null,
-        name: name.trim(),
-        tags: tagSeed,
-        type,
-        updatedAt: formatDateTime(new Date()),
-      };
+export const useProjectStore = create<ProjectState>()(
+  persist(
+    (set) => ({
+      activeProject: null,
+      createProject: (name, type) =>
+        set((state) => {
+          const nextProject = {
+            id: createProjectId(name),
+            mqttConnection: type === "mqtt_client" ? { ...defaultMqttConnection, id: `mqtt-${Date.now()}` } : null,
+            name: name.trim(),
+            tags: tagSeed,
+            type,
+            updatedAt: formatDateTime(new Date()),
+          };
 
-      return {
-        activeProject: nextProject,
-        projects: [nextProject, ...state.projects],
-      };
+          return {
+            activeProject: nextProject,
+            projects: [nextProject, ...state.projects],
+          };
+        }),
+      openProject: (projectId) =>
+        set((state) => ({
+          activeProject: state.projects.find((project) => project.id === projectId) ?? state.activeProject,
+        })),
+      projects: projectSeed,
+      updateActiveProject: (patch) =>
+        set((state) => {
+          if (!state.activeProject) {
+            return state;
+          }
+
+          const updatedProject = {
+            ...state.activeProject,
+            ...patch,
+            name: patch.name.trim(),
+            updatedAt: formatDateTime(new Date()),
+          };
+
+          return {
+            activeProject: updatedProject,
+            projects: state.projects.map((project) =>
+              project.id === updatedProject.id ? updatedProject : project,
+            ),
+          };
+        }),
     }),
-  openProject: (projectId) =>
-    set((state) => ({
-      activeProject: state.projects.find((project) => project.id === projectId) ?? state.activeProject,
-    })),
-  projects: projectSeed,
-  updateActiveProject: (patch) =>
-    set((state) => {
-      if (!state.activeProject) {
-        return state;
-      }
-
-      const updatedProject = {
-        ...state.activeProject,
-        ...patch,
-        name: patch.name.trim(),
-        updatedAt: formatDateTime(new Date()),
-      };
-
-      return {
-        activeProject: updatedProject,
-        projects: state.projects.map((project) =>
-          project.id === updatedProject.id ? updatedProject : project,
-        ),
-      };
-    }),
-}));
+    {
+      name: localPersistenceKeys.projectStore,
+      partialize: (state) => ({
+        activeProject: state.activeProject,
+        projects: state.projects,
+      }),
+      storage: createJSONStorage(getBrowserLocalStorage),
+      version: localPersistenceVersion,
+    },
+  ),
+);

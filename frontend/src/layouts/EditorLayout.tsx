@@ -1,6 +1,6 @@
 import { Activity, ClipboardPaste, Copy, MoveDiagonal, PanelRight, Power, SendHorizontal, Trash2 } from "lucide-react";
 import { Button, Panel, SelectField, TextField } from "../shared/ui";
-import type { SceneObjectModel, SceneTool } from "../features/scene/types";
+import type { SceneObjectModel } from "../features/scene/types";
 import type { TagDefinition } from "../features/project";
 import type { TagRuntimeValue } from "../features/tags";
 
@@ -10,7 +10,6 @@ type PublishFeedback = {
 };
 
 type EditorLayoutProps = {
-  activeTool: SceneTool;
   canDeleteSelectedObject: boolean;
   canCopySelectedObject: boolean;
   canPasteObject: boolean;
@@ -18,7 +17,6 @@ type EditorLayoutProps = {
   isDropTarget: boolean;
   onDeleteSelectedObject: () => void;
   onBackgroundPointerDown: () => void;
-  onChangeTool: (tool: SceneTool) => void;
   onPasteObject: () => void;
   onObjectFieldChange: (object: SceneObjectModel, patch: Partial<SceneObjectModel>) => void;
   onSceneDragLeave: () => void;
@@ -48,7 +46,6 @@ function getSceneObjectClassName(object: SceneObjectModel, selectedObjectId: str
 }
 
 export function EditorLayout({
-  activeTool,
   canDeleteSelectedObject,
   canCopySelectedObject,
   canPasteObject,
@@ -56,7 +53,6 @@ export function EditorLayout({
   isDropTarget,
   onDeleteSelectedObject,
   onBackgroundPointerDown,
-  onChangeTool,
   onPasteObject,
   onObjectFieldChange,
   onSceneDragLeave,
@@ -88,15 +84,6 @@ export function EditorLayout({
         }}
       >
         <div className="scene-toolbar">
-          <Button active={activeTool === "select"} onClick={() => onChangeTool("select")}>
-            Select
-          </Button>
-          <Button active={activeTool === "move"} onClick={() => onChangeTool("move")}>
-            Move
-          </Button>
-          <Button active={activeTool === "resize"} onClick={() => onChangeTool("resize")}>
-            Resize
-          </Button>
           <Button disabled={canDeleteSelectedObject === false} onClick={onDeleteSelectedObject}>
             <Trash2 size={14} />
             Delete
