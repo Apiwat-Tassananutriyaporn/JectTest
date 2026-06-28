@@ -8,23 +8,34 @@ import {
 import type { AlarmRule } from "../types";
 
 type AlarmRuleState = {
-  addRule: (rule: AlarmRule) => void;
   deleteRule: (ruleId: string) => void;
   rules: AlarmRule[];
+  saveRuleForSource: (rule: AlarmRule) => void;
 };
 
 export const useAlarmRuleStore = create<AlarmRuleState>()(
   persist(
     (set) => ({
-      addRule: (rule) =>
-        set((state) => ({
-          rules: [rule, ...state.rules],
-        })),
       deleteRule: (ruleId) =>
         set((state) => ({
           rules: state.rules.filter((rule) => rule.id !== ruleId),
         })),
       rules: [],
+      saveRuleForSource: (rule) =>
+        set((state) => {
+          const source = rule.conditions[0];
+          const otherRules = state.rules.filter((candidate) => {
+            if (!source || !candidate.conditions.length) {
+              return true;
+            }
+
+            return !candidate.conditions.every(
+              (condition) => condition.tagId === source.tagId && condition.type === source.type,
+            );
+          });
+
+          return { rules: [rule, ...otherRules] };
+        }),
     }),
     {
       name: localPersistenceKeys.alarmRuleStore,

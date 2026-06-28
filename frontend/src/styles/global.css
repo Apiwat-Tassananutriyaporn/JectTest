@@ -865,6 +865,7 @@ button {
 
 .surface-view {
   display: grid;
+  align-content: start;
   gap: var(--space-4);
   min-height: 0;
   padding: var(--space-5);
@@ -882,6 +883,86 @@ button {
 .surface-header {
   justify-content: space-between;
   gap: var(--space-4);
+}
+
+.surface-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.alarm-monitor-header,
+.alarm-log-toolbar,
+.alarm-search-field,
+.alarm-summary-chip,
+.alarm-severity-cell,
+.alarm-status-pill {
+  display: flex;
+  align-items: center;
+}
+
+.alarm-monitor-header {
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.alarm-monitor-header h2 {
+  margin: 2px 0 0;
+  font-size: var(--font-2xl);
+}
+
+.alarm-monitor-eyebrow {
+  color: var(--accent-primary);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.alarm-summary-chip {
+  gap: var(--space-1);
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  color: var(--text-secondary);
+  background: var(--surface-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+}
+
+.alarm-summary-chip strong {
+  color: var(--text-primary);
+}
+
+.alarm-summary-chip-critical strong {
+  color: var(--state-danger);
+}
+
+.alarm-log-toolbar {
+  gap: var(--space-2);
+}
+
+.alarm-search-field {
+  flex: 1;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-3);
+  color: var(--text-muted);
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.alarm-search-field:focus-within {
+  border-color: var(--accent-primary);
+  outline: 2px solid color-mix(in oklab, var(--accent-primary) 30%, transparent);
+}
+
+.alarm-search-field input {
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
 }
 
 .surface-header h2 {
@@ -907,20 +988,21 @@ button {
 }
 
 .alarm-table {
+  order: 1;
+  align-self: start;
   background: var(--surface-panel);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-}
-
-.alarm-table {
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .alarm-table-row {
   display: grid;
-  grid-template-columns: 150px minmax(150px, 0.85fr) minmax(220px, 1.15fr) minmax(180px, 1fr) 150px;
+  grid-template-columns: 64px 180px minmax(180px, 1fr) 100px minmax(160px, 0.8fr) 100px minmax(180px, 0.9fr) minmax(140px, 0.7fr);
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  min-width: 1180px;
+  min-height: 52px;
+  padding: 0 var(--space-3);
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -929,10 +1011,89 @@ button {
 }
 
 .alarm-table-row.is-head {
+  min-height: 38px;
   color: var(--text-muted);
   background: var(--surface-panel-raised);
   font-size: var(--font-xs);
   text-transform: uppercase;
+}
+
+.alarm-table-row-critical {
+  background: color-mix(in oklab, var(--state-danger) 7%, var(--surface-panel));
+  box-shadow: inset 3px 0 0 var(--state-danger);
+}
+
+.alarm-table-row-warning {
+  box-shadow: inset 3px 0 0 var(--state-warning);
+}
+
+.alarm-table-row-info {
+  box-shadow: inset 3px 0 0 var(--state-info);
+}
+
+.alarm-table-row > span,
+.alarm-table-row > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alarm-severity-cell {
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+}
+
+.alarm-severity-cell-info {
+  color: var(--state-info);
+  background: color-mix(in oklab, var(--state-info) 16%, transparent);
+}
+
+.alarm-severity-cell-warning {
+  color: var(--state-warning);
+  background: color-mix(in oklab, var(--state-warning) 16%, transparent);
+}
+
+.alarm-severity-cell-critical {
+  color: var(--state-danger);
+  background: color-mix(in oklab, var(--state-danger) 16%, transparent);
+}
+
+.alarm-status-pill {
+  width: fit-content;
+  min-height: 26px;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  font-size: var(--font-xs);
+}
+
+.alarm-status-active {
+  color: var(--state-danger);
+  background: color-mix(in oklab, var(--state-danger) 15%, transparent);
+}
+
+.alarm-condition-pill {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 28px;
+  padding: 5px var(--space-2);
+  color: var(--state-info);
+  background: color-mix(in oklab, var(--state-info) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--state-info) 45%, var(--border-subtle));
+  border-radius: 999px;
+  font-size: var(--font-xs);
+}
+
+.alarm-table-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: 1180px;
+  min-height: 96px;
+  color: var(--text-muted);
 }
 
 .alarm-cell,
@@ -965,8 +1126,7 @@ button {
   color: var(--state-info);
 }
 
-.alarm-rule-builder,
-.alarm-rule-list {
+.alarm-rule-builder {
   display: grid;
   gap: var(--space-3);
   padding: var(--space-4);
@@ -975,31 +1135,286 @@ button {
   border-radius: var(--radius-lg);
 }
 
+.alarm-rule-modal {
+  width: min(820px, 100%);
+}
+
+.alarm-delete-modal {
+  width: min(420px, 100%);
+}
+
+.alarm-delete-copy {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.alarm-delete-button {
+  color: var(--text-inverse);
+  background: var(--state-danger);
+  border-color: var(--state-danger);
+}
+
+.alarm-builder-header,
+.alarm-section-heading,
+.alarm-condition-row,
+.alarm-rule-summary {
+  display: flex;
+  align-items: center;
+}
+
+.alarm-builder-header {
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.alarm-builder-header h2 {
+  margin: 2px 0;
+  font-size: var(--font-xl);
+}
+
+.alarm-builder-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+}
+
+.alarm-builder-eyebrow {
+  color: var(--accent-secondary);
+  font-size: var(--font-xs);
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.alarm-rule-count {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+}
+
+.alarm-builder-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.alarm-rule-source-fields {
+  display: grid;
+  grid-template-columns: minmax(240px, 360px) 260px;
+  gap: var(--space-2);
+  max-width: 628px;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.alarm-condition-workspace,
+.alarm-rule-details {
+  min-width: 0;
+}
+
+.alarm-rule-details {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.alarm-section-heading {
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 38px;
+}
+
+.alarm-section-heading > div {
+  display: grid;
+  gap: 2px;
+}
+
+.alarm-section-heading strong {
+  font-size: var(--font-md);
+}
+
+.alarm-section-heading span {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+}
+
 .alarm-rule-conditions,
 .alarm-rule-list {
+  order: 2;
   display: grid;
+}
+
+.alarm-rule-conditions {
   gap: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .alarm-rule-condition {
   display: grid;
-  grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 1fr) minmax(120px, 0.45fr) repeat(2, minmax(100px, 0.45fr)) auto;
-  gap: var(--space-2);
-  align-items: end;
+  gap: var(--space-1);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .alarm-rule-condition:first-child {
-  grid-template-columns: minmax(180px, 1fr) minmax(120px, 0.45fr) repeat(2, minmax(100px, 0.45fr)) auto;
+  border-top: 0;
 }
 
-.alarm-rule-footer {
+.alarm-condition-row {
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.alarm-condition-index {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.35fr);
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  margin-top: 21px;
+  color: var(--text-secondary);
+  background: var(--surface-panel-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  font-size: var(--font-xs);
+  font-weight: 650;
+}
+
+.alarm-condition-content {
+  display: grid;
+  flex: 1;
+  gap: var(--space-2);
+  max-width: 628px;
+  min-width: 0;
+}
+
+.alarm-condition-fields,
+.alarm-condition-details-fields,
+.alarm-threshold-fields {
+  display: grid;
+  grid-template-columns: minmax(240px, 360px) 260px;
+  gap: var(--space-2);
+}
+
+.alarm-threshold-fields {
+  grid-template-columns: repeat(2, 180px);
+  justify-content: start;
+}
+
+.alarm-condition-details-fields {
+  align-items: end;
+}
+
+.alarm-condition-content > label {
+  max-width: 380px;
+}
+
+.alarm-severity-field {
+  max-width: none;
+}
+
+.alarm-severity-options {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.alarm-severity-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 36px;
+  padding: 0 var(--space-2);
+  color: var(--text-muted);
+  background: var(--surface-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-xs);
+}
+
+.alarm-severity-option[aria-pressed="true"] {
+  background: var(--surface-panel-raised);
+  border-color: currentColor;
+}
+
+.alarm-severity-option-info[aria-pressed="true"] {
+  color: var(--state-info);
+}
+
+.alarm-severity-option-warning[aria-pressed="true"] {
+  color: var(--state-warning);
+}
+
+.alarm-severity-option-critical[aria-pressed="true"] {
+  color: var(--state-danger);
+}
+
+.alarm-threshold-fields label {
+  max-width: 180px;
+}
+
+.alarm-condition-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  color: var(--state-warning);
+  background: color-mix(in oklab, var(--state-warning) 10%, transparent);
+  border-left: 3px solid var(--state-warning);
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+}
+
+.alarm-condition-row > .icon-button {
+  flex: 0 0 34px;
+  margin-top: 20px;
+  color: var(--text-muted);
+}
+
+.alarm-condition-row > .icon-button:hover {
+  color: var(--state-danger);
+}
+
+.alarm-rule-summary {
+  align-items: flex-start;
   gap: var(--space-3);
+  min-height: 64px;
+  padding: var(--space-3);
+  color: var(--state-info);
+  background: color-mix(in oklab, var(--state-info) 10%, transparent);
+  border-left: 3px solid currentColor;
+  border-radius: var(--radius-md);
+}
+
+.alarm-rule-summary-warning {
+  color: var(--state-warning);
+  background: color-mix(in oklab, var(--state-warning) 10%, transparent);
+}
+
+.alarm-rule-summary-critical {
+  color: var(--state-danger);
+  background: color-mix(in oklab, var(--state-danger) 10%, transparent);
+}
+
+.alarm-rule-summary div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.alarm-rule-summary span {
+  overflow-wrap: anywhere;
+  color: var(--text-secondary);
+  font-size: var(--font-xs);
 }
 
 .alarm-rule-actions,
-.alarm-rule-item {
+.alarm-rule-item,
+.alarm-rule-list-header {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -1007,32 +1422,74 @@ button {
 
 .alarm-rule-actions {
   justify-content: flex-end;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.alarm-save-button {
+  color: var(--text-inverse);
+  background: var(--accent-primary);
+}
+
+.alarm-save-button:hover {
+  background: var(--accent-primary-hover);
 }
 
 .alarm-rule-item {
-  justify-content: space-between;
-  padding: var(--space-3);
-  background: var(--surface-panel-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(120px, 0.45fr) minmax(100px, 0.35fr) 100px 76px;
+  min-height: 62px;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border-subtle);
 }
 
-.alarm-rule-item div {
+.alarm-rule-list {
+  align-self: start;
+  align-content: start;
+  overflow: hidden;
+  background: var(--surface-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.alarm-rule-list-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(120px, 0.45fr) minmax(100px, 0.35fr) 100px 76px;
+  min-height: 42px;
+  padding: 0 var(--space-3);
+  background: var(--surface-panel-raised);
+}
+
+.alarm-rule-list-header strong {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+  font-weight: 600;
+}
+
+.alarm-rule-item-copy {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.alarm-rule-item span,
-.alarm-rule-item small {
+.alarm-rule-item-copy span,
+.alarm-rule-type,
+.alarm-rule-condition-count {
   overflow: hidden;
   color: var(--text-muted);
+  font-size: var(--font-xs);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .alarm-rule-item strong {
   color: var(--text-primary);
+}
+
+.alarm-rule-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-1);
 }
 
 .scene-surface {
@@ -1246,6 +1703,19 @@ button:focus-visible {
   background: var(--accent-primary);
 }
 
+@media (max-width: 900px) {
+  .alarm-builder-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .alarm-rule-details {
+    padding-top: var(--space-4);
+    padding-left: 0;
+    border-top: 1px solid var(--border-subtle);
+    border-left: 0;
+  }
+}
+
 @media (max-width: 1080px) {
   .project-entry {
     grid-template-columns: 1fr;
@@ -1276,6 +1746,16 @@ button:focus-visible {
     display: none;
   }
 
+  .alarm-rule-item,
+  .alarm-rule-list-header {
+    grid-template-columns: minmax(0, 1fr) auto 76px;
+  }
+
+  .alarm-rule-type,
+  .alarm-rule-condition-count {
+    display: none;
+  }
+
 }
 
 @media (max-width: 760px) {
@@ -1303,14 +1783,21 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .alarm-rule-condition,
-  .alarm-rule-condition:first-child,
-  .alarm-rule-footer {
+  .alarm-condition-fields,
+  .alarm-condition-details-fields,
+  .alarm-threshold-fields,
+  .alarm-rule-source-fields {
     grid-template-columns: 1fr;
   }
 
-  .alarm-table-row {
-    grid-template-columns: 1fr;
+  .alarm-builder-header,
+  .alarm-section-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .alarm-condition-index {
+    display: none;
   }
 
   .tag-runtime-detail {
@@ -1352,8 +1839,14 @@ button:focus-visible {
     flex-direction: column;
   }
 
-  .alarm-table-row {
-    grid-template-columns: 1fr;
+  .alarm-monitor-header,
+  .alarm-log-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .alarm-monitor-header .surface-header-actions {
+    flex-wrap: wrap;
   }
 }
 

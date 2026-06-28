@@ -1,15 +1,15 @@
-export type AlarmConditionType = "number" | "text";
-export type AlarmConditionCombinator = "and" | "or";
+export type AlarmConditionType = "" | "number" | "text";
 export type AlarmSeverity = "Critical" | "Info" | "Warning";
 
 export type AlarmRuleCondition = {
-  combinator: AlarmConditionCombinator;
   id: string;
   max: string;
   min: string;
+  severity?: AlarmSeverity;
   tagId: string;
   text: string;
   type: AlarmConditionType;
+  warningText?: string;
 };
 
 export type AlarmRule = {

@@ -53,28 +53,40 @@ function evaluateCondition(
     const numericValue = getNumericValue(runtime);
     const minValue = condition.min.trim() ? Number(condition.min) : null;
     const maxValue = condition.max.trim() ? Number(condition.max) : null;
-    const lowerActive = minValue !== null && Number.isFinite(minValue) && numericValue !== null && numericValue < minValue;
-    const upperActive = maxValue !== null && Number.isFinite(maxValue) && numericValue !== null && numericValue > maxValue;
+    const lowerMatches =
+      minValue === null || !Number.isFinite(minValue) || (numericValue !== null && numericValue >= minValue);
+    const upperMatches =
+      maxValue === null || !Number.isFinite(maxValue) || (numericValue !== null && numericValue <= maxValue);
     const conditionParts = [
       minValue !== null && Number.isFinite(minValue) ? `min ${minValue}` : "",
       maxValue !== null && Number.isFinite(maxValue) ? `max ${maxValue}` : "",
     ].filter(Boolean);
 
     return {
-      active: lowerActive || upperActive,
-      conditionText: `${tag.name} outside ${conditionParts.join(" / ") || "range"}`,
+      active: numericValue !== null && lowerMatches && upperMatches,
+      conditionText: `${tag.name} within ${conditionParts.join(" / ") || "range"}`,
       source: tag.topicPath,
       time: runtime.receivedAt,
       value: formatValue(getRuntimeDisplayValue(runtime), tag.unit),
     };
   }
 
-  const expectedText = condition.text.trim();
-  const runtimeText = String(runtime.value ?? "");
+  if (condition.type === "text") {
+    const expectedText = condition.text.trim();
+    const runtimeText = String(runtime.value ?? "");
+
+    return {
+      active: expectedText ? runtimeText.includes(expectedText) : false,
+      conditionText: `${tag.name} contains "${expectedText}"`,
+      source: tag.topicPath,
+      time: runtime.receivedAt,
+      value: formatValue(getRuntimeDisplayValue(runtime), tag.unit),
+    };
+  }
 
   return {
-    active: expectedText ? runtimeText.includes(expectedText) : false,
-    conditionText: `${tag.name} contains "${expectedText}"`,
+    active: false,
+    conditionText: `${tag.name} condition is incomplete`,
     source: tag.topicPath,
     time: runtime.receivedAt,
     value: formatValue(getRuntimeDisplayValue(runtime), tag.unit),
@@ -95,29 +107,21 @@ export function evaluateAlarmEvents(
       return;
     }
 
-    const isActive = conditionResults.reduce((currentResult, conditionResult, index) => {
-      if (index === 0) {
-        return conditionResult.active;
-      }
-
-      const combinator = rule.conditions[index].combinator;
-      return combinator === "and" ? currentResult && conditionResult.active : currentResult || conditionResult.active;
-    }, conditionResults[0].active);
+    const isActive = conditionResults.some((conditionResult) => conditionResult.active);
 
     if (!isActive) {
       return;
     }
 
-    const activeResult = conditionResults.find((result) => result.active) ?? conditionResults[0];
+    const activeConditionIndex = conditionResults.findIndex((result) => result.active);
+    const activeResult = conditionResults[activeConditionIndex] ?? conditionResults[0];
+    const activeCondition = rule.conditions[activeConditionIndex] ?? rule.conditions[0];
 
     events.push({
-      condition: conditionResults.map((result, index) => {
-        const prefix = index === 0 ? "" : `${rule.conditions[index].combinator.toUpperCase()} `;
-        return `${prefix}${result.conditionText}`;
-      }).join(" "),
-      message: rule.warningText,
+      condition: activeResult.conditionText,
+      message: activeCondition.warningText?.trim() || rule.warningText,
       name: `Alarm Rule ${ruleIndex + 1}`,
-      severity: rule.severity,
+      severity: activeCondition.severity ?? rule.severity,
       source: activeResult.source,
       time: activeResult.time,
       value: activeResult.value,
